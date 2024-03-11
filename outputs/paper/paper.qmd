@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Building Integrity in Retrospect: Assessing the Impact of Age on 2023 Safety Evaluations"
 title-block-banner: true
 abstract: ""
 thanks: "Code and data supporting this analysis are available at "
@@ -28,15 +28,46 @@ library(readr)
 
 ## Introduction
 
+
 ## Data
 
 ```{r include=FALSE, message=FALSE}
 # read the data file and store it in the 'data' variable
-data <- read_csv(here("outputs", "data", "cleaned_building_data.csv"))
+cleaned_data <- read_csv(here("outputs", "data", "cleaned_building_data.csv"))
 ```
 
 ## Model
 
 ## Result
+
+```{r echo=FALSE}
+# Construct a linear model
+lm_model <- lm(CURRENT.BUILDING.EVAL.SCORE ~ AGE, data = cleaned_data)
+
+# Summary of the linear model
+summary(lm_model)
+```
+```{r echo=FALSE}
+# Create a scatter plot with a regression line to visualize the relationship
+improved_plot <- ggplot(cleaned_data, aes(x = AGE, y = CURRENT.BUILDING.EVAL.SCORE)) +
+  geom_point(alpha = 0.5, size = 1.5) +  # Adjust transparency and size of points
+  geom_smooth(method = "lm", color = "blue", size = 1) +  # Change the size of the regression line
+  labs(
+    x = "Age of Building",
+    y = "Current Building Evaluation Score",
+    title = "Relationship between Building Age and Evaluation Score"
+  ) +
+  theme_minimal() +  # Use a minimal theme
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 16),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    legend.position = "none"  # Hide the legend if not necessary
+  )
+
+# Print the improved plot
+print(improved_plot)
+```
+
 
 ## Discussion 
