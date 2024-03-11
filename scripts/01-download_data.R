@@ -4,10 +4,6 @@ library(readr)
 library(dplyr)
 library(here)
 
-# Set the root directory for the 'here' package
-# This is typically the top-level directory of your project
-set_here <- here::set_here()
-
 # Search for packages related to "building evaluation"
 search_result <- search_packages("building evaluation")
 

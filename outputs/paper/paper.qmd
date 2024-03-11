@@ -2,7 +2,7 @@
 title: ""
 title-block-banner: true
 abstract: ""
-thanks: "Code and data supporting this analysis are available at https://github.com/TEJMaster/Replication-For-Money-Illusion.git Replication on Social Science Reproduction platform available at: https://www.socialsciencereproduction.org/reproductions/1671/published/index"
+thanks: "Code and data supporting this analysis are available at "
 author: "Terry Tu, Jingyi Shen, Yaning Jin "
 date: today
 date-format: long
@@ -17,4 +17,26 @@ editor:
     wrap: sentence
 ---
 
+```{r setup, include=FALSE, message=FALSE}
+## Import necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(here)
+library(readr)
+```
 
+## Introduction
+
+## Data
+
+```{r include=FALSE, message=FALSE}
+# read the data file and store it in the 'data' variable
+data <- read_csv(here("outputs", "data", "cleaned_building_data.csv"))
+```
+
+## Model
+
+## Result
+
+## Discussion 
