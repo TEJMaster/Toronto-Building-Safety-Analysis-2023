@@ -22,6 +22,6 @@ To facilitate transparency and reproducibility, the repository is structured as 
 
 The contributions to this project are as follows:
 
-Terry Tu:
-Jingyi Shen:
-Yaning jin:
+- Terry Tu:
+- Jingyi Shen:
+- Yaning jin:
