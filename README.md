@@ -15,7 +15,7 @@ To facilitate transparency and reproducibility, the repository is structured as 
 ### How to Use This Repository
 
 - **Data Analysis Workflow**: For an in-depth analysis process, refer to the R markdown files within the scripts/ directory.
-- **Reading the Report**: The full report, including insights and policy implications, can be found under outputs/report/.
+- **Reading the Report**: The full report, including insights and policy implications, can be found under `outputs/paper/`.
 - **Exploring Data**: Access the initial dataset in inputs/data/ and the cleaned data in outputs/data/.
 
 ### Division of Work
