@@ -3,6 +3,8 @@ This repository hosts the project "Building Integrity in Retrospect: Assessing t
 
 Throughout this project, insights gleaned from the data are expected to inform policy recommendations and contribute to the discourse on urban development and maintenance. In addition, this research effort leverages advanced statistical techniques, including simple linear regression, to forecast and interpret the potential trajectory of building evaluations.
 
+In the creation of this project, OpenAI's ChatGPT was used to enhance the paragraphs, as well as assist in generating the plots. You can check the `other/llm/chat_with_chatGPT.txt` for a complete conversation of my usage of ChatGPT in this project.
+
 ### Repository Structure
 To facilitate transparency and reproducibility, the repository is structured as follows:
 
