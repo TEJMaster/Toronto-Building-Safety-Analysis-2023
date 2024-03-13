@@ -1,5 +1,5 @@
 ---
-title: "Building Integrity in Retrospect: Assessing the Impact of Age on 2023 Safety Evaluations"
+title: "Structural Insights 2023: A Linear Analysis of Apartment Age and Safety Scores in Toronto"
 title-block-banner: true
 abstract: "This study harnesses a dataset from the Toronto Open Data portal, comprising 3,435 records of apartment evaluations, to analyze the correlation between building age and safety scores. Employing a linear regression model, we discovered a significant inverse relationship, highlighting that older buildings tend to have lower safety evaluations. The findings suggest a need for policy reform, particularly in the maintenance and inspection of Toronto's aging residential infrastructure. Despite the study’s focus on building age, further research considering additional variables could offer a more comprehensive understanding of factors influencing building safety."
 thanks: "Code and data supporting this analysis are available at https://github.com/TEJMaster/Toronto-Building-Safety-Analysis-2023.git"
