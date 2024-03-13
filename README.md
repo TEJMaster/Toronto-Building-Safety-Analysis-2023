@@ -6,17 +6,11 @@ Throughout this project, insights gleaned from the data are expected to inform p
 ### Repository Structure
 To facilitate transparency and reproducibility, the repository is structured as follows:
 
-- `inputs/data/`: Contains the raw dataset, building_evaluation_data.csv, obtained from the City of Toronto's Open Data portal.
-- `outputs/`: Hosts all generated outputs and findings from the project:
-- `outputs/data/`: Houses the processed and cleaned dataset ready for analysis.
-- `outputs/paper/`: Stores the comprehensive report detailing our findings and implications.
-- `scripts/`: Consists of R scripts utilized for data cleaning, analysis, and visualization.
-
-### How to Use This Repository
-
-- **Data Analysis Workflow**: For an in-depth analysis process, refer to the R markdown files within the scripts/ directory.
-- **Reading the Report**: The full report, including insights and policy implications, can be found under `outputs/paper/`.
-- **Exploring Data**: Access the initial dataset in inputs/data/ and the cleaned data in outputs/data/.
+- `data/`: This directory stores the dataset used in the project. The raw dataset, `building_ealuation_data.csv`, sourced from opendatatoronto, is stored at `data/raw_data`. After data cleaning process, the cleaned data set is stored under `data/analysis_data`
+- `models/`: This directory stores the linear model used in this study.
+- `other/`: This directory stores the miscellaneous components used for project creation such as sketches, LLM usage, . 
+- `paper/`: This directory stores the report of the actual paper. 
+- `scripts/`: This folder contains some R scripts for this project. 
 
 ### Division of Work
 
