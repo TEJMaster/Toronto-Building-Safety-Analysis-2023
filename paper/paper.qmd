@@ -37,7 +37,7 @@ Using simple linear regression analysis enables a detailed exploration of the li
 
 ```{r include=FALSE, message=FALSE}
 # read the data file and store it in the 'data' variable
-cleaned_data <- read_csv(here("outputs", "data", "cleaned_building_data.csv"))
+cleaned_data <- read_csv(here("data", "analysis_data", "cleaned_building_data.csv"))
 ```
 
 In this research, we examine apartment data sourced from the Toronto Open Data portal. The dataset encompasses 3,435 records, focusing on specific variables: the ward of each apartment, its evaluation score, and the construction year. The data covers evaluations across Toronto's 25 wards, with scores varying between a minimum of 0 and some achieving the maximum score of 100. The study includes apartments that are over three stories in height and contain at least 10 units. These apartments span a wide range of construction years, from as early as 1805 to as recent as 2023. All the apartments in this dataset adhere to the City's Apartment Building Standards bylaw, which is designed to safeguard the interests and safety of both landlords and tenants by mandating these evaluations [@Toronto_2023].
@@ -66,35 +66,61 @@ Statistically, this script is preparing the dataset for analysis by ensuring the
 
 ## Model
 
+The objective of our model is dual: to discern the relationship between building age and safety evaluation scores and to quantify this relationship's strength and direction. The study utilizes a simple linear regression model to analyze the dataset obtained from the Toronto Open Data portal.
 
+### Model set-up
+
+Let $y_i$ represent the safety evaluation score for each building. The building's age is denoted by $x_i$.The model is defined as follows:
+
+\begin{align}
+y_i &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 + \beta_1 \times \mbox{AGE}_i \\
+\beta_0 &\sim \mbox{Normal}(90, 10) \\
+\beta_1 &\sim \mbox{Normal}(-0.1, 0.05)
+\end{align}
+
+The model is executed in R using the lm function. We select normal priors for the intercept and slope based on initial exploratory data analysis.
+
+### Model justification
+
+A negative coefficient for AGE is anticipated, hypothesizing that older buildings may have lower safety scores due to factors such as wear and deterioration over time. We anticipate the intercept to represent the evaluation score for a newly built property, with the slope capturing the average yearly decrease in score.
 
 ## Result
 
 ```{r echo=FALSE}
-# Construct a linear model
-lm_model <- lm(CURRENT.BUILDING.EVAL.SCORE ~ AGE, data = cleaned_data)
+# Retrieve the linear model from the saved .rds file
+lm_model <- readRDS(file = here("models", "linear_model.rds"))
 ```
 
-### Coefficient
+### Model Coefficients Interpretation
 
 ```{r echo=FALSE}
 # Extract coefficients from the model
 coefficients <- summary(lm_model)$coefficients
 coefficients
 ```
+The regression model provides two key coefficients to understand the relationship between building age and the evaluation score:
 
-Intercept: The intercept  \beta_0 an estimated value of 93.62182. This is the expected value of the response when the independent variable x is zero. The standard error of the intercept is 0.64813, indicating the average distance that the observed values fall from the regression line. 
+**Intercept** ($\beta_0$)  
+The model estimates the intercept, $\beta_0$, to be 93.61663. This is the predicted evaluation score for a building at the time it is newly constructed, where AGE equals zero. Accompanied by a standard error of 0.64805, this coefficient's estimate signals the level of precision with which we can predict the evaluation score for new buildings. The t-value associated with the intercept is 144.459, which is highly significant, as indicated by the p-value of practically zero. This signifies a very strong statistical assurance in the intercept's estimate.
 
-AGE: The coefficient for AGE is -0.10086 which in terms of  \beta_1 is -0.10086. This suggests that for each additional year of age, the response decreases by approximately 0.10086 points, on average. The standard error of this estimate is 0.01015, which is a measure of the precision of the estimate.
+**Slope** ($\beta_1$)  
+The slope of the model, $\beta_1$, is determined to be -0.10079. This value quantifies the expected change in the building evaluation score for each additional year of age; specifically, the score is projected to decrease by about 0.10079 points annually. The standard error of 0.01015 suggests high precision in this estimation. The t-value of -9.929 reaffirms the reliability of this coefficient, with a corresponding p-value of 1.226807e-22, far below the 0.05 threshold, confirming the impact of age on evaluation scores is statistically significant.
 
-T-value: The t-value is a measure of how many standard deviations the coefficient is away from zero. For the intercept, the t-value is 144.449, and for AGE, it is -9.934. These are calculated by dividing the estimate by the standard error. The high absolute value of the t-statistics suggests that the coefficients are significantly different from zero.
+These coefficients paint a picture of gradual decline in building quality as measured by the evaluation scores over time. The statistical significance of both coefficients assures us that the model's predictions are based on real effects and not on random fluctuations within the dataset. This analysis emphasizes the need for rigorous maintenance and periodic updates to older buildings to preserve their integrity and safety.
 
-P-value: The p-value tests the null hypothesis that the coefficient is equal to zero. A p-value less than 0.05 typically suggests that there is a statistically significant association between the predictor and the response variable. In this table, both p-values are shown as "2e-16", which is a notation for a number very close to zero and indicates that both the intercept and the AGE predictor have p-values much lower than 0.05, making them highly significant. 
+### Model Equation
 
-In summary, the linear regression analysis suggests that there is a statistically significant inverse relationship between the age of an apartment and its evaluation score. The older the apartment, the lower its evaluation score tends to be, holding other factors constant. The intercept indicates that a newly built apartment (AGE = 0) would have a predicted evaluation score of 93.62182. 
+\begin{align}
+y_i &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 + \beta_1 \times \mbox{AGE}_i \\
+\beta_0 &= 93.6166 \\
+\beta_1 &= -0.1008
+\end{align}
 
+In this model, $y_i$ represents the predicted evaluation score for the $i$-th building, $\mu_i$ is the mean of the normal distribution for the $i$-th observation, $\beta_0$ is the intercept, and $\beta_1$ is the slope representing the change in evaluation score per year of building age.
 
-### Residuals
+### Analysis of Residuals
 
 ```{r echo=FALSE}
 # Extract residuals from the model
@@ -102,51 +128,47 @@ residuals <- resid(lm_model)
 summary(residuals)
 ```
 
-1. Minimum Residual: This value suggests the presence of at least one observation where the building evaluation score was underestimated by the model by as much as 69.662 points, given the age of the building. This could be an outlier or may indicate a building whose score is exceptionally low compared to what the model predicts for its age.
+**1. Minimum Residual**: The minimum residual is -69.662, indicating that there is at least one building for which the model's predicted evaluation score was lower than the actual score by approximately 69.662 points. This could be an outlier or a building with exceptional characteristics not captured by the model.
 
-2. First Quartile Residual: 25% of the residuals are less than this value. It implies that a quarter of the buildings have evaluation scores that are 4.364 points less than the predicted score by the model for buildings of their respective ages.
+**2. First Quartile Residual**: The first quartile (Q1) of the residuals is -4.364, meaning that 25% of the buildings have evaluation scores that are less than 4.364 points below the model's prediction for their age.
 
-3. Median Residual: The median of the residuals is slightly above zero, indicating that the distribution of errors is not perfectly symmetrical and that there may be a slight tendency for the model to overestimate the scores, on average, for the buildings in this sample.
+**3. Median Residual**: The median residual is 1.702, suggesting a slight positive bias in the model's predictions, as the median of the error distribution is above zero. This indicates that, on average, the model tends to slightly overestimate the evaluation scores.
 
-4. Third Quartile Residual: This is the median of the upper half of the residuals. 75% of the buildings have evaluation scores within 5.833 points of the model's prediction or better, reflecting that for the majority, the model's predictions are quite close to the actual scores.
+**4. Third Quartile Residual**: The third quartile (Q3) is 5.833, indicating that 75% of the buildings have evaluation scores within 5.833 points of the model's predictions or better. This shows that the model provides reasonably accurate predictions for the majority of buildings.
 
-5. Maximum Residual: The largest positive residual suggests that the model overestimated the building evaluation score for at least one building by as much as 15.859 points compared to its actual score. This again may indicate an outlier or a building that performed unexpectedly well despite its age.
+**5. Maximum Residual**: The maximum residual is 15.859, suggesting that there is at least one building for which the model's predicted evaluation score was higher than the actual score by approximately 15.859 points. This could be another outlier or a building that performed exceptionally well.
 
-These residuals are crucial for assessing the adequacy of the model fit and the validity of its assumptions, such as linearity, homoscedasticity (constant variance of residuals), and normality of error terms. The range and distribution of these residuals, particularly the presence of significant outliers, can influence the conclusions drawn from t-tests and the calculated confidence and prediction intervals. Such anomalies warrant further investigation into the specific characteristics of those buildings to understand why the model's predictions differ markedly from the observed scores. It's also important to ensure that the regression assumptions hold since this affects the validity of the p-values and confidence intervals used to quantify and infer the effect of building age on evaluation scores.
+**Interpretation**: The residuals provide insights into the model's fit and the distribution of errors. The presence of outliers and the distribution's slight asymmetry warrant further investigation. It's crucial to assess the model's assumptions, such as linearity, homoscedasticity, and normality of residuals, to ensure the validity of the statistical inferences made from the model. Understanding the reasons behind significant deviations can help improve the model and provide more accurate predictions.
+
+\newpage
 
 ### Plot for the linear model
-```{r echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig-linear-plot, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="plot for the linear relationship between building age and evaluation score"}
 # Create a scatter plot with a regression line to visualize the relationship
 improved_plot <- ggplot(cleaned_data, aes(x = AGE, y = CURRENT.BUILDING.EVAL.SCORE)) +
-  geom_point(alpha = 0.5, size = 1.5) +  # Adjust transparency and size of points
+  geom_point(alpha = 0.7, size = 1) +  # Adjust transparency and size of points
   geom_smooth(method = "lm", color = "blue", size = 1) +  # Change the size of the regression line
   labs(
-    x = "Age of Building",
+    x = "Building Age",
     y = "Current Building Evaluation Score",
-    title = "Relationship between Building Age and Evaluation Score"
   ) +
   theme_minimal() +  # Use a minimal theme
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5, size = 16),
-    axis.title = element_text(size = 14),
-    axis.text = element_text(size = 12),
-    legend.position = "none"  # Hide the legend if not necessary
-  )
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8), # Rotate x axis text and adjust horizontal justification
+    axis.text.y = element_text(size = 8),
+    legend.position = "none", # Hide the legend if not necessary
+    plot.margin = margin(1, 1, 1, 1, "cm") # Adjust the margin around the plot
+  ) +
+  theme(legend.position = "bottom") # Move the legend to the bottom to prevent it from overlapping the plot
 
 # Print the improved plot
 print(improved_plot)
 ```
 
-The graph provided illustrates the findings of a simple linear regression analysis that seeks to clarify the influence of one independent variable, building age, on the dependent variable, the building evaluation score. The scatterplot displays individual data points representing apartments, with the age of the building on the x-axis and the current building evaluation score on the y-axis.
 
-A linear regression line has been fitted through the data, represented by the solid blue line, which indicates the average trend in the data. The slope of this line is a graphical representation of the regression coefficient associated with building age. In statistical terms, the slope tells us the average change in the evaluation score for each year increase in building age. If the slope is negative, it would suggest that, on average, older buildings tend to have lower evaluation scores.
-The density of the data points is heaviest near the younger age of buildings, and as age increases, the data points disperse more. This could suggest that there is greater variability in the scores of older buildings or that there are simply fewer older buildings in the dataset.
+@fig-linear-plot provides a clear visual relationship between the age of buildings and their evaluation scores. Displayed with building age on the x-axis and evaluation score on the y-axis, the data points represent individual apartment buildings. The blue line running through the cluster of points represents the linear regression line, which captures the average effect of age on evaluation score. Noticeably, the slope of the line is downward, suggesting a negative correlation; as the buildings get older, their evaluation scores tend to decrease. This trend is consistent across the dataset, indicating a general decline in scores as building age increases, a reflection of the typical effects of wear and time on building integrity.
 
-Statistical significance is often determined by looking at the p-value for the slope of the regression line. In previous discussions, a p-value well below the threshold of 0.05 was mentioned, indicating that the effect of building age on evaluation score is indeed statistically significant. This would mean that there is a very low probability that the observed relationship, or one more extreme, would occur if there were actually no relationship between building age and evaluation score in the population.
-
-It is also important to examine the residuals, or the differences between the observed scores and those predicted by the model, which should be randomly dispersed without pattern if the model's assumptions hold true. In addition, the graph should be assessed for homoscedasticity, meaning that the variance of the residuals is constant across all levels of the independent variable. If the residuals fan out or form a funnel shape as building age increases, this would indicate heteroscedasticity, a violation of one of the linear regression assumptions, which could affect the reliability of the model.
-
-To summarize, this graph presents a visual and statistical summary of the relationship between building age and evaluation score, with the analysis revealing that age is a significant predictor of evaluation score, though it accounts for a relatively small portion of the variability in scores. Further analysis would be necessary to better understand the dispersion of scores, especially among older buildings, and to examine the model's underlying assumptions.
+In statistical analysis, the significance of this downward trend is supported by a p-value much lower than the conventional threshold of 0.05, confirming the relationship between building age and evaluation score is not due to random chance. However, the plot also reveals that while younger buildings cluster more densely around higher evaluation scores, older buildings exhibit a wider spread of scores. This variation suggests that other factors may influence the condition and safety of older buildings, which are not captured solely by age. The plot does not show any clear pattern or funnel shape in the residuals, indicating that the variance of the evaluation scores is fairly consistent across the range of building ages, and the assumption of homoscedasticity is not visibly violated. Nonetheless, the model's findings imply the importance of consistent maintenance and updates to older buildings to ensure safety standards are upheld over time.
 
 
 ## Discussion 
@@ -172,5 +194,7 @@ Despite its contributions, this study has several limitations. Firstly, the mode
 Given the limitations and the insights gained, future research should aim to incorporate additional variables that could affect building evaluation scores. A more comprehensive model including factors like renovation history, compliance with current building codes, and socio-economic characteristics of the neighborhood could provide a deeper understanding of what influences building evaluation scores. Longitudinal studies could also shed light on the trends over time, offering insights into the effectiveness of policy interventions and maintenance practices. Moreover, comparative analyses across different cities or countries could highlight unique challenges and best practices in building maintenance and safety standards.
 
 In conclusion, while this study has provided valuable insights into the impact of building age on evaluation scores, it also opens the door for further research to explore the multifaceted nature of building quality and safety. Addressing these questions is crucial for developing effective strategies to improve urban living conditions and ensure the longevity and safety of the housing stock.
+
+## Appendix
 
 ## References

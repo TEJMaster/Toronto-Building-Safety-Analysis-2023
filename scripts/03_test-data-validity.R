@@ -1,11 +1,21 @@
-# Load necessary packages
+#### Preamble ####
+# Purpose: To perform a series of data integrity tests on the cleaned building evaluation dataset
+# Author: Terry Tu, Jingyi Shen, Yaning Jin
+# Date: 14 March 2024
+# Contact: xiangyu.tu@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: 'readr' for reading CSV data, 'dplyr' for data manipulation, 'here' for file path management, and 'testthat' for testing data integrity
+# Any other information needed? The cleaned dataset should be located in the 'data/analysis_data' directory and be free of processing errors
+
+#### Workspace setup ####
 library(readr)
 library(dplyr)
 library(here)
 library(testthat)
 
+#### Load and test data ####
 # Load the cleaned data file into a data frame
-data <- read_csv(here("outputs", "data", "cleaned_building_data.csv"))
+data <- read_csv(here("data", "analysis_data", "cleaned_building_data.csv"))
 
 # Define a function to perform the tests
 perform_data_tests <- function(data) {
@@ -28,4 +38,4 @@ perform_data_tests <- function(data) {
 }
 
 # Run the tests on the data
-perform_data_tests(data)
+test_results <- testthat::test_dir("tests")
