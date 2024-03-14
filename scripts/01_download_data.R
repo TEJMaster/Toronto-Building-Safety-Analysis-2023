@@ -5,7 +5,7 @@
 # Contact: xiangyu.tu@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: The 'opendatatoronto' package for accessing open data, 'readr' and 'dplyr' for data manipulation, and 'here' for path management
-# Any other information needed? Ensure that the 'opendatatoronto' package is installed and updated to the latest version
+# Ensure that the 'opendatatoronto' package is installed and updated to the latest version
 
 #### Workspace setup ####
 library(opendatatoronto)

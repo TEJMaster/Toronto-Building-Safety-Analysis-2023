@@ -5,7 +5,7 @@
 # Contact: xiangyu.tu@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: 'readr' for reading CSV data, 'dplyr' for data manipulation, and 'here' for managing file paths
-# Any other information needed? The raw dataset must be located in the 'data/raw_data' directory before running this script
+# The raw dataset must be located in the 'data/raw_data' directory before running this script
 
 #### Workspace setup ####
 library(readr)

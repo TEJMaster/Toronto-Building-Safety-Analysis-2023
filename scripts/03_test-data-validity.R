@@ -4,38 +4,32 @@
 # Date: 14 March 2024
 # Contact: xiangyu.tu@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 'readr' for reading CSV data, 'dplyr' for data manipulation, 'here' for file path management, and 'testthat' for testing data integrity
-# Any other information needed? The cleaned dataset should be located in the 'data/analysis_data' directory and be free of processing errors
+# Pre-requisites: 'readr' for reading CSV data, 'dplyr' for data manipulation, 'here' for file path management
+# The cleaned dataset should be located in the 'data/analysis_data' directory and be free of processing errors
 
 #### Workspace setup ####
 library(readr)
 library(dplyr)
 library(here)
-library(testthat)
 
-#### Load and test data ####
-# Load the cleaned data file into a data frame
-data <- read_csv(here("data", "analysis_data", "cleaned_building_data.csv"))
+# Load the cleaned data file into a variable 'data'
+file_path <- here("data", "analysis_data", "cleaned_building_data.csv")
+data <- read_csv(file_path)
 
-# Define a function to perform the tests
-perform_data_tests <- function(data) {
-  # Test if AGE column has no negative values
-  test_that("AGE column contains no negative values", {
-    expect_true(all(data$AGE >= 0), info = "There are negative values in the AGE column")
-  })
-  
-  # Test if YEAR.BUILT, YEAR.EVALUATED, CURRENT.BUILDING.EVAL.SCORE have no NA values
-  test_that("No NA values in YEAR.BUILT, YEAR.EVALUATED, CURRENT.BUILDING.EVAL.SCORE", {
-    expect_true(all(!is.na(data$YEAR.BUILT)), info = "There are NA values in YEAR.BUILT")
-    expect_true(all(!is.na(data$YEAR.EVALUATED)), info = "There are NA values in YEAR.EVALUATED")
-    expect_true(all(!is.na(data$CURRENT.BUILDING.EVAL.SCORE)), info = "There are NA values in CURRENT.BUILDING.EVAL.SCORE")
-  })
-  
-  # Test if CURRENT.BUILDING.EVAL.SCORE column has no negative values
-  test_that("CURRENT.BUILDING.EVAL.SCORE column contains no negative values", {
-    expect_true(all(data$CURRENT.BUILDING.EVAL.SCORE >= 0), info = "There are negative values in CURRENT.BUILDING.EVAL.SCORE")
-  })
-}
+# Below are the tests for the cleaned dataset, 
+# after running them we expected to get TRUE for all test cases
 
-# Run the tests on the data
-test_results <- testthat::test_dir("tests")
+# Test 1: No negative values in the AGE column
+test_age_positive <- all(data$AGE >= 0)
+
+# Test 2: No NA values in YEAR.BUILT, YEAR.EVALUATED, CURRENT.BUILDING.EVAL.SCORE columns
+test_no_na <- all(!is.na(data$YEAR.BUILT) & !is.na(data$YEAR.EVALUATED) & !is.na(data$CURRENT.BUILDING.EVAL.SCORE))
+
+# Test 3: CURRENT.BUILDING.EVAL.SCORE values are within the range 0 to 100
+test_score_range <- all(data$CURRENT.BUILDING.EVAL.SCORE >= 0 & data$CURRENT.BUILDING.EVAL.SCORE <= 100)
+
+# Print the result from the tests
+print(paste("Test 1 - No negative values in AGE:", test_age_positive))
+print(paste("Test 2 - No NA values in critical columns:", test_no_na))
+print(paste("Test 3 - Building scores are within the range of 0 to 100:", test_score_range))
+
