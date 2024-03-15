@@ -28,8 +28,12 @@ test_no_na <- all(!is.na(data$YEAR.BUILT) & !is.na(data$YEAR.EVALUATED) & !is.na
 # Test 3: CURRENT.BUILDING.EVAL.SCORE values are within the range 0 to 100
 test_score_range <- all(data$CURRENT.BUILDING.EVAL.SCORE >= 0 & data$CURRENT.BUILDING.EVAL.SCORE <= 100)
 
+# Test 4: All YEAR.EVALUATED values are 2023
+test_year_evaluated <- all(data$YEAR.EVALUATED == 2023)
+
 # Print the result from the tests
 print(paste("Test 1 - No negative values in AGE:", test_age_positive))
 print(paste("Test 2 - No NA values in critical columns:", test_no_na))
 print(paste("Test 3 - Building scores are within the range of 0 to 100:", test_score_range))
+print(paste("Test 4 - All YEAR.EVALUATED values are 2023:", test_year_evaluated))
 

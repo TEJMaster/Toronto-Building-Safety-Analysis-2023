@@ -23,8 +23,8 @@ bayesian_model <- stan_glm(
   CURRENT.BUILDING.EVAL.SCORE ~ AGE, 
   data = cleaned_data,
   family = gaussian(), # Assuming a normal distribution for the response variable
-  prior = normal(0, 2.5, autoscale = FALSE), # Set the prior for the coefficients
-  prior_intercept = normal(0, 10, autoscale = FALSE), # Set the prior for the intercept
+  prior = normal(0, 0.05, autoscale = FALSE), # Set the prior for the slope coefficient (beta_1)
+  prior_intercept = normal(85, 10, autoscale = FALSE), # Set the prior for the intercept (beta_0)
   seed = 2024 # Set the seed for reproducibility
 )
 
