@@ -1,0 +1,115 @@
+YANING JIN:
+```{r setup, include=FALSE, message=FALSE} ## Import necessary libraries library(ggplot2) library(dplyr) library(tidyverse) library(here) library(readr) library(knitr) library(kableExtra) ```# Data ```{r include=FALSE, message=FALSE} # read the data file and store it in the 'data' variable cleaned_data <- read_csv(here("data", "analysis_data", "cleaned_building_data.csv"))## Sample of Cleaned Building Evaluation Data ```{r} #| label: tbl-data-sample #| tbl-cap: Sample of Building Evaluation Data #| echo: false #| # Select the first few rows of the dataset and the specific columns sample_data <- head(cleaned_data) %>% select(X_id, AGE, CURRENT.BUILDING.EVAL.SCORE) # Create a nicely formatted table kable(sample_data) ```### Data Summary ```{r} #| label: tbl-summary-table #| tbl-cap: Summary Statistics for the Cleaned Dataset #| echo: false summary_data <- cleaned_data %>% summarise( Count = n(), Mean_Age = mean(AGE, na.rm = TRUE), Std_Age = sd(AGE, na.rm = TRUE), Mean_Score = mean(CURRENT.BUILDING.EVAL.SCORE, na.rm = TRUE), Std_Score = sd(CURRENT.BUILDING.EVAL.SCORE, na.rm = TRUE) ) %>% mutate(across(everything(), ~round(., 3))) # Create and print a nicely formatted table summary_table <- kable(summary_data, col.names = c("Count", "Mean Age", "SD of Age", "Mean Score", "SD of Score"), align = 'c') %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, position = "center") %>% column_spec(1, bold = TRUE) # Make the first column bold # Print the summary table summary_table ```### Age Distribution ```{r fig-age-distribution, echo=FALSE, fig.cap="Distribution of building's age for the cleaned data set"} # Histogram for the distribution of building age ggplot(cleaned_data, aes(x = AGE)) + geom_histogram(binwidth = 5, fill = "steelblue", color = "white") + labs( x = "Age of Building (Years)", y = "Frequency" ) + theme_minimal() + theme( plot.title = element_text(size = 16, face = "bold"), axis.title = element_text(size = 14), axis.text = element_text(size = 12) ) ```### Score Distribution ```{r fig-score-distribution, echo=FALSE, fig.cap="Distribution of building's evaluation score for the cleaned data set"} # Histogram for CURRENT.BUILDING.EVAL.SCORE distribution ggplot(cleaned_data, aes(x = CURRENT.BUILDING.EVAL.SCORE)) + geom_histogram(binwidth = 5, fill = "darkgreen", color = "white") + labs( x = "Current Building Evaluation Score", y = "Frequency" ) + theme_minimal() + theme( plot.title = element_text(size = 16, face = "bold"), axis.title = element_text(size = 14), axis.text = element_text(size = 12) ) ``` @fig-score-distribution showcases the distribution of building evaluation scores. The x-axis represents the scores assigned to buildings, which can range from 0 to 100, with the y-axis displaying the frequency of buildings for each score interval. The chart reveals a concentration of high evaluation scores, suggesting that many of the buildings in the dataset are rated as being in good or excellent condition according to the evaluation criteria. The tallest bars are clustered towards the higher end of the score range, indicating that buildings with scores close to 100 are prevalent. This positive skew in the distribution might reflect effective building standards and maintenance practices in place. The spread of the scores and their frequency can offer insights into the overall health of the evaluated buildings, influencing urban planning and policy development. # Result ```{r echo=FALSE} # Retrieve the Bayesian linear model from the saved .rds file bayesian_model <- readRDS(file = here("models", "bayesian_linear_model.rds")) ``` ## Model Coefficients Interpretation ```{r echo=FALSE} # Extract coefficients from the Bayesian model coefficients <- coef(bayesian_model) print(coefficients) ```## Analysis of Residuals ```{r echo=FALSE} # Extract residuals from the Bayesian model residuals <- residuals(bayesian_model) summary(residuals) ```## Plot for the linear model ```{r fig-linear-plot, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="plot for the linear relationship between building age and evaluation score"} # Enhanced scatter plot with regression line improved_plot <- ggplot(cleaned_data, aes(x = AGE, y = CURRENT.BUILDING.EVAL.SCORE)) + geom_point(alpha = 0.7, size = 1) + # Adjust transparency and size of points geom_smooth(method = "lm", color = "blue", size = 1) + labs( x = "Building Age", y = "Building Evaluation Score", title = "Impact of Building Age on Evaluation Score" ) + theme_minimal() + # Use a minimal theme theme( plot.title = element_text(size = 14), axis.title.x = element_text(size = 12), axis.title.y = element_text(size = 12), axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_text(size = 10), legend.position = "none" # Hide the legend if not necessary ) # Display the plot print(improved_plot) ```
+Based on my R code give me a simulation (give me the code in R)
+
+ChatGPT:
+Based on the tasks outlined in your R code, let's simulate some building evaluation data and perform a basic analysis similar to what your script aims to accomplish. This simulation will involve generating synthetic data for building age and current building evaluation scores, and then applying a simple linear model to this data. Finally, we'll plot the relationship between building age and evaluation score, similar to the final plot in your script.
+
+r
+Copy code
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidiverse)
+
+# Simulate building data
+set.seed(123) # for reproducibility
+n_buildings <- 1000 # number of buildings
+buildings <- tibble(
+  X_id = 1:n_buildings,
+  AGE = round(rnorm(n_buildings, mean = 50, sd = 15)), # Assuming mean age is 50 with a standard deviation of 15
+  CURRENT_BUILDING_EVAL_SCORE = round(rnorm(n_buildings, mean = 75, sd = 10)) # Assuming mean score is 75 with a standard deviation of 10
+)
+
+# Ensure that AGE and CURRENT_BUILDING_EVAL_SCORE are within realistic bounds
+buildings <- buildings %>%
+  mutate(
+    AGE = ifelse(AGE < 0, 0, AGE), # Buildings can't have negative age
+    CURRENT_BUILDING_EVAL_SCORE = pmin(pmax(CURRENT_BUILDING_EVAL_SCORE, 0), 100) # Scores are between 0 and 100
+  )
+
+# Basic linear model between building age and evaluation score
+model <- lm(CURRENT_BUILDING_EVAL_SCORE ~ AGE, data = buildings)
+
+# Summary of the model
+summary(model)
+
+# Plot the relationship with a regression line
+ggplot(buildings, aes(x = AGE, y = CURRENT_BUILDING_EVAL_SCORE)) +
+  geom_point(alpha = 0.5) + # Use semi-transparent points
+  geom_smooth(method = "lm", color = "blue") + # Add linear regression line
+  labs(
+    x = "Age of Building (Years)",
+    y = "Current Building Evaluation Score",
+    title = "Simulated Relationship between Building Age and Evaluation Score"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold")
+  )
+This code performs the following actions:
+
+Simulation of Building Data: Generates a dataset of 1000 buildings with their ages and evaluation scores simulated based on normal distributions. The ages and scores are rounded and adjusted to ensure they remain within realistic bounds (e.g., ages are non-negative, and scores are between 0 and 100).
+Linear Model: Fits a simple linear model to explore the relationship between the age of a building (AGE) and its current evaluation score (CURRENT_BUILDING_EVAL_SCORE).
+Plotting: Visualizes the data and the linear relationship with a scatter plot and a regression line, enhancing understanding of how building age might influence its evaluation score in this simulated dataset.
+Remember, this is a simulation for illustrative purposes, and the generated data, along with the insights drawn from the linear model, are purely hypothetical.
+
+YANING JIN:
+Can you give me an example of a simulation(in R)？
+
+ChatGPT:
+Certainly! Let's create a simple simulation in R that models the spread of a contagious illness through a population. This simulation will use a basic SIR (Susceptible, Infected, Recovered) model, which is a common framework in epidemiology for simulating how diseases spread.
+
+The SIR model divides the population into three groups:
+
+Susceptible (S): Individuals who are not yet infected but can become infected.
+Infected (I): Individuals who are currently infected and can spread the disease to susceptible individuals.
+Recovered (R): Individuals who have recovered from the disease and are now immune.
+The simulation will run for a certain number of days, updating the number of susceptible, infected, and recovered individuals each day based on transmission and recovery rates.
+
+R Code for a Simple SIR Model Simulation
+r
+Copy code
+# Parameters
+population_size <- 1000   # Total population
+initial_infected <- 10    # Initial number of infected individuals
+beta <- 0.3               # Transmission rate per day
+gamma <- 0.1              # Recovery rate per day
+days <- 50                # Duration of simulation
+
+# Initialization
+S <- population_size - initial_infected
+I <- initial_infected
+R <- 0
+results <- data.frame(day = integer(0), S = integer(0), I = integer(0), R = integer(0))
+
+# Simulation
+for(day in 1:days) {
+  new_infections <- round(beta * I * S / population_size)
+  new_recoveries <- round(gamma * I)
+  
+  S <- S - new_infections
+  I <- I + new_infections - new_recoveries
+  R <- R + new_recoveries
+  
+  # Ensure no negative numbers
+  S <- max(S, 0)
+  I <- max(I, 0)
+  R <- max(R, 0)
+  
+  results <- rbind(results, data.frame(day = day, S = S, I = I, R = R))
+}
+
+# Plotting the results
+library(ggplot2)
+ggplot(data = results, aes(x = day)) + 
+  geom_line(aes(y = S, colour = "Susceptible")) + 
+  geom_line(aes(y = I, colour = "Infected")) + 
+  geom_line(aes(y = R, colour = "Recovered")) +
+  labs(y = "Number of Individuals", title = "SIR Model Simulation") +
+  scale_colour_manual(values = c("Susceptible" = "blue", "Infected" = "red", "Recovered" = "green"))
+This code performs a simple SIR model simulation over 50 days with a starting population of 1000 individuals, where 10 are initially infected. It calculates the number of new infections and recoveries each day based on the transmission rate (beta) and recovery rate (gamma). Finally, it plots the number of susceptible, infected, and recovered individuals over time.
+
+Note that this is a highly simplified model. Real-world scenarios would require more complex models considering various factors like incubation periods, different stages of infection, and interventions like vaccination or social distancing.
