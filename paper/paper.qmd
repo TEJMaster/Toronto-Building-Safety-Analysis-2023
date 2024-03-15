@@ -81,6 +81,10 @@ kable(sample_data, col.names = c("Building ID", "Age (Years)", "Evaluation Score
 ```
 @tbl-data-sample represents a subset of the larger building evaluation data. Each row corresponds to a unique building identified by X_id. The AGE column indicates the age of the building in years, while the CURRENT.BUILDING.EVAL.SCORE column shows the building's current evaluation score on a scale from 0 to 100, with higher scores indicating better compliance with safety standards.
 
+## Measurement:
+
+\newpage 
+
 ## Data Exploration:
 
 ### Data Summary
@@ -177,9 +181,9 @@ The objective of our model is dual: to discern the relationship between building
 Let $y_i$ represent the safety evaluation score for each building. The building's age is denoted by $x_i$.The model is defined as follows:
 
 \begin{align}
-y_i &\sim \mbox{Normal}(\mu_i, \sigma) \
-\mu_i &= \beta_0 + \beta_1 \times \mbox{AGE}_i \
-\beta_0 &\sim \mbox{Normal}(85, 10) \
+y_i &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 + \beta_1 \times \mbox{AGE}_i \\
+\beta_0 &\sim \mbox{Normal}(85, 10) \\
 \beta_1 &\sim \mbox{Normal}(0, 0.05)
 \end{align}
 
@@ -291,8 +295,6 @@ residuals_table
 
 **Interpretation**: The residuals provide insights into the model's fit and the distribution of errors. The presence of outliers and the distribution's slight asymmetry warrant further investigation. It's crucial to assess the model's assumptions, such as linearity, homoscedasticity, and normality of residuals, to ensure the validity of the statistical inferences made from the model. Understanding the reasons behind significant deviations can help improve the model and provide more accurate predictions.
 
-\newpage
-
 ## Plot for the linear model
 ```{r fig-linear-plot, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="plot for the linear relationship between building age and evaluation score"}
 # Enhanced scatter plot with regression line
@@ -321,7 +323,7 @@ print(improved_plot)
 
 @fig-linear-plot provides a clear visual relationship between the age of buildings and their evaluation scores. Displayed with building age on the x-axis and evaluation score on the y-axis, the data points represent individual apartment buildings. The blue line running through the cluster of points represents the linear regression line, which captures the average effect of age on evaluation score. Noticeably, the slope of the line is downward, suggesting a negative correlation; as the buildings get older, their evaluation scores tend to decrease. This trend is consistent across the dataset, indicating a general decline in scores as building age increases, a reflection of the typical effects of wear and time on building integrity.
 
-In statistical analysis, the significance of this downward trend is supported by a p-value much lower than the conventional threshold of 0.05, confirming the relationship between building age and evaluation score is not due to random chance. However, the plot also reveals that while younger buildings cluster more densely around higher evaluation scores, older buildings exhibit a wider spread of scores. This variation suggests that other factors may influence the condition and safety of older buildings, which are not captured solely by age. The plot does not show any clear pattern or funnel shape in the residuals, indicating that the variance of the evaluation scores is fairly consistent across the range of building ages, and the assumption of homoscedasticity is not visibly violated. Nonetheless, the model's findings imply the importance of consistent maintenance and updates to older buildings to ensure safety standards are upheld over time.
+The plot also reveals that while younger buildings cluster more densely around higher evaluation scores, older buildings exhibit a wider spread of scores. This variation suggests that other factors may influence the condition and safety of older buildings, which are not captured solely by age. The plot does not show any clear pattern or funnel shape in the residuals, indicating that the variance of the evaluation scores is fairly consistent across the range of building ages, and the assumption of homoscedasticity is not visibly violated. Nonetheless, the model's findings imply the importance of consistent maintenance and updates to older buildings to ensure safety standards are upheld over time.
 
 
 # Discussion {#sec-discussion}
