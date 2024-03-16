@@ -83,19 +83,15 @@ kable(sample_data, col.names = c("Building ID", "Age (Years)", "Evaluation Score
 
 ## Measurement:
 
-For our research, we collected data from the City of Toronto’s website utilizing the "opendatatoronto" package [@Toronto_2023]. We adjusted certain variables and excluded observations with missing values, as several variables were incomplete. A new variable, "AGE" was introduced to represent the building's age, which served as the sole predictor in our simple linear regression analysis.
+In this study, we utilized data from the City of Toronto's RentSafeTO program, accessed through the "opendatatoronto" package [@Toronto_2023]. The RentSafeTO program, initiated in 2017, aims to ensure that apartment buildings with at least three stories or 10 units meet essential safety and maintenance standards. This program is crucial for enhancing resident living conditions and extending the longevity of buildings in Toronto [@rentsafeto].
 
-Apartment Building Standards program was initiated in 2017 to ensure that apartment buildings with at least three stories or 10 units adhere to required maintenance standards. This initiative targets building owners and operators, ensuring compliance through regular inspections.
+To prepare the dataset for analysis, we made several adjustments, including the introduction of a new variable, "AGE," which represents the age of the building and serves as the sole predictor in our simple linear regression analysis. We also excluded observations with missing values to ensure the completeness of our dataset.
 
-This dataset provides scores from these evaluations for registered RentSafeTO buildings, where Bylaw Enforcement Officers inspect areas like common spaces, mechanical and security features, parking, and exterior grounds.
+The RentSafeTO program involves regular evaluations conducted by Bylaw Enforcement Officers, who assess various aspects of buildings, including common areas, mechanical and security systems, and exteriors. In 2023, the evaluation process was updated to require biennial evaluations, expand the assessment categories to 50, and introduce a scoring system ranging from zero to three. This updated process addresses previous challenges in evaluations and non-applicabilities, providing a more comprehensive and nuanced understanding of building conditions.
 
-In 2023, the evaluation method of RentSafeTO saw significant changes. Now, buildings are assessed at minimum every two years, with the inclusion of 50 different categories in the evaluation, each given a specific weight.
+The dataset resulting from these evaluations offers valuable insights into the dynamics of building aging within Toronto's regulatory and maintenance framework. It is particularly useful for researchers and analysts looking to investigate temporal trends and the impact of the post-2023 enhancements on building safety and maintenance standards.
 
-During an evaluation, each category is scored on a scale from one to three, with one being the lowest score and three the highest. Occasionally, a category might receive a score of 0 if it’s not possible to evaluate it due to blockages or refusal of access. If a category is not relevant at the time of evaluation, it's left blank in the dataset.
-
-
-\newpage 
-
+ 
 ## Data Exploration:
 
 ### Data Summary
@@ -144,7 +140,7 @@ These statistics offer a snapshot of the dataset's characteristics, providing fo
 
 
 ### Age Distribution
-```{r fig-age-distribution, echo=FALSE, fig.cap="Distribution of building's age for the cleaned data set"}
+```{r fig-age-distribution, echo=FALSE, fig.cap="Distribution of building's age for the cleaned data set", fig.width=8, fig.height=4}
 # Histogram for the distribution of building age
 ggplot(cleaned_data, aes(x = AGE)) +
   geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
@@ -154,18 +150,19 @@ ggplot(cleaned_data, aes(x = AGE)) +
   ) +
   theme_minimal() +
   theme(
-    plot.title = element_text(size = 16, face = "bold"),
-    axis.title = element_text(size = 14),
-    axis.text = element_text(size = 12)
+    plot.title = element_text(size = 10, face = "bold"),
+    axis.title = element_text(size = 9),
+    axis.text = element_text(size = 8)
   )
 ```
 
 @fig-age-distribution illustrates the frequency distribution of the ages of buildings within the dataset. The x-axis represents the age of the buildings in years, while the y-axis shows the frequency of buildings within each age range. The distribution appears to be unimodal with a peak around the 50-year mark, indicating that a substantial number of the buildings within this dataset were constructed around half a century ago. Following this peak, the frequency gradually decreases, showing that fewer buildings have been in existence beyond this age. The distribution suggests a relatively young building population, with ages concentrated below 100 years, and very few buildings reaching beyond 120 years of age. This visualization aids in understanding the age profile of buildings under consideration for safety evaluation scoring.
 
-
+\newpage
 ### Score Distribution
 
-```{r fig-score-distribution, echo=FALSE, fig.cap="Distribution of building's evaluation score for the cleaned data set"}
+```{r fig-score-distribution, echo=FALSE, fig.cap="Distribution of building's evaluation score for the cleaned data set", fig.width=8, fig.height=4}
+# Code created with the help from ChatGPT
 # Histogram for CURRENT.BUILDING.EVAL.SCORE distribution
 ggplot(cleaned_data, aes(x = CURRENT.BUILDING.EVAL.SCORE)) +
   geom_histogram(binwidth = 5, fill = "darkgreen", color = "white") +
@@ -175,9 +172,9 @@ ggplot(cleaned_data, aes(x = CURRENT.BUILDING.EVAL.SCORE)) +
   ) +
   theme_minimal() +
   theme(
-    plot.title = element_text(size = 16, face = "bold"),
-    axis.title = element_text(size = 14),
-    axis.text = element_text(size = 12)
+    plot.title = element_text(size = 10, face = "bold"),
+    axis.title = element_text(size = 9),
+    axis.text = element_text(size = 8)
   )
 ```
 
@@ -373,5 +370,6 @@ The data cleaning process involved several key steps to prepare the building eva
 ## Data Validation
 
 Following the data cleaning process, a series of data integrity tests were conducted on the cleaned building evaluation dataset to ensure its accuracy and reliability for analysis. The first test verified that there were no negative values in the AGE column, as negative building ages would be illogical. The second test confirmed the absence of missing values (NA) in the critical columns YEAR.BUILT, YEAR.EVALUATED, and CURRENT.BUILDING.EVAL.SCORE, which are essential for the analysis. The third test checked that all evaluation scores fell within the expected range of 0 to 100, a necessary condition for valid score data. Lastly, the fourth test ensured that all buildings were evaluated in the year 2023, aligning with the study's focus on contemporary building evaluations. These validation checks were crucial for maintaining the dataset's integrity and provided confidence in the subsequent statistical modeling and analysis.
+
 
 # References
