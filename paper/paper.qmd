@@ -83,6 +83,17 @@ kable(sample_data, col.names = c("Building ID", "Age (Years)", "Evaluation Score
 
 ## Measurement:
 
+For our research, we collected data from the City of Toronto’s website utilizing the "opendatatoronto" package [@Toronto_2023]. We adjusted certain variables and excluded observations with missing values, as several variables were incomplete. A new variable, "AGE" was introduced to represent the building's age, which served as the sole predictor in our simple linear regression analysis.
+
+Apartment Building Standards program was initiated in 2017 to ensure that apartment buildings with at least three stories or 10 units adhere to required maintenance standards. This initiative targets building owners and operators, ensuring compliance through regular inspections.
+
+This dataset provides scores from these evaluations for registered RentSafeTO buildings, where Bylaw Enforcement Officers inspect areas like common spaces, mechanical and security features, parking, and exterior grounds.
+
+In 2023, the evaluation method of RentSafeTO saw significant changes. Now, buildings are assessed at minimum every two years, with the inclusion of 50 different categories in the evaluation, each given a specific weight.
+
+During an evaluation, each category is scored on a scale from one to three, with one being the lowest score and three the highest. Occasionally, a category might receive a score of 0 if it’s not possible to evaluate it due to blockages or refusal of access. If a category is not relevant at the time of evaluation, it's left blank in the dataset.
+
+
 \newpage 
 
 ## Data Exploration:
@@ -328,27 +339,30 @@ The plot also reveals that while younger buildings cluster more densely around h
 
 # Discussion {#sec-discussion}
 
-## Overview of the Study
+## Summary of Findings
 
-This paper presented a detailed analysis using simple linear regression to investigate the impact of building age on the evaluation scores assigned by the City of Toronto. By analyzing data from the Toronto Open Data portal, the study aimed to forecast evaluation scores for Toronto residences in 2023. The analysis revealed a statistically significant inverse relationship between building age and evaluation score, suggesting that older buildings tend to have lower evaluation scores.
+This study embarked on a journey to understand the relationship between the age of apartment buildings in Toronto and their safety evaluation scores. Leveraging a dataset of 3,435 records from the Toronto Open Data portal, we employed simple linear regression analysis to unearth a significant inverse correlation between building age and safety scores. Specifically, our findings indicate that older buildings in Toronto tend to receive lower safety evaluation scores. This observation underscores the potential risks associated with aging infrastructure, aligning with the broader literature on building safety and maintenance.
 
-## Insights into Urban Development and Maintenance
+## Insights into Building Safety
 
-One key insight from this study is the importance of building age in the overall health and safety of urban residential environments. The findings underscore the potential risks associated with older buildings, which may not meet modern standards or may have deteriorated over time. This knowledge emphasizes the need for regular inspections, maintenance, and upgrades to older buildings to ensure they remain safe and habitable. Additionally, the study highlights the value of continuous monitoring and evaluation by urban authorities to maintain and improve housing standards across the city.
+Our analysis brings to light a critical insight into the urban infrastructure landscape: the aging of buildings could be a ticking time bomb if not properly managed. The negative correlation between building age and evaluation scores signals that older buildings may not meet current safety and maintenance standards compared to newer constructions. This poses a significant challenge for city planners, policymakers, and building owners alike, emphasizing the need for regular inspections, maintenance, and renovations to ensure that these structures remain safe for occupancy.
 
-## Policy Implications and Housing Quality
+## Policy Implications
 
-Another significant insight relates to the policy implications for housing quality and safety standards. The correlation between building age and lower evaluation scores may prompt policymakers to reconsider regulations surrounding building inspections, maintenance schedules, and renovation requirements. It suggests an opportunity for targeted interventions in older buildings to prevent potential hazards and improve living conditions for residents. Moreover, these findings could guide urban planning strategies, prioritizing the revitalization of aging housing stock and ensuring equitable access to safe and quality housing.
+The findings of this study have profound implications for public policy and regulatory frameworks. They suggest a need for revisiting and possibly tightening regulations concerning building inspections and maintenance, especially for older structures. Moreover, the results could inform the development of targeted policies that prioritize interventions in older buildings, potentially including incentives for owners to upgrade and maintain their properties to meet current safety standards. Implementing such policies could significantly reduce the risks associated with structural failures, thereby enhancing urban safety and resilience.
 
-## Limitations of the Study
+## Limitations and Areas for Improvement
 
-Despite its contributions, this study has several limitations. Firstly, the model accounts for only a small fraction of the variability in evaluation scores, indicating that other factors besides building age significantly influence these scores. The exclusion of variables such as building materials, design, maintenance history, and location may limit the comprehensiveness of the findings. Additionally, the model's assumptions (e.g., linearity and homoscedasticity) and the presence of outliers suggest caution in generalizing the results without further investigation.
+While our study provides valuable insights, it is not without limitations. The primary focus on building age as the sole predictor of safety scores overlooks other potential factors that might influence these scores, such as the materials used in construction, the building's design, and the history of renovations and repairs. Additionally, the linear regression model, though powerful in detecting linear relationships, may not capture non-linear dynamics that could be present between building age and safety scores.
 
-## Future Directions
+Future research should consider incorporating more variables into the analysis to capture a broader spectrum of factors influencing building safety. Moreover, employing more complex models, such as multivariate regression or machine learning algorithms, could unveil more nuanced relationships and provide a more comprehensive understanding of what determines building safety scores.
 
-Given the limitations and the insights gained, future research should aim to incorporate additional variables that could affect building evaluation scores. A more comprehensive model including factors like renovation history, compliance with current building codes, and socio-economic characteristics of the neighborhood could provide a deeper understanding of what influences building evaluation scores. Longitudinal studies could also shed light on the trends over time, offering insights into the effectiveness of policy interventions and maintenance practices. Moreover, comparative analyses across different cities or countries could highlight unique challenges and best practices in building maintenance and safety standards.
+## Forward Look: Beyond Age
 
-In conclusion, while this study has provided valuable insights into the impact of building age on evaluation scores, it also opens the door for further research to explore the multifaceted nature of building quality and safety. Addressing these questions is crucial for developing effective strategies to improve urban living conditions and ensure the longevity and safety of the housing stock.
+This study marks a starting point in the exploration of factors influencing building safety in Toronto. As we move forward, it is crucial to broaden our analytical lens to include a wider array of variables that could affect building safety. Investigating the role of renovation histories, compliance with evolving building codes, and the impact of environmental factors such as climate change could enrich our understanding. Additionally, comparative studies across different cities or countries could reveal interesting insights into how various regulatory frameworks and building practices impact safety outcomes.
+
+Ultimately, enhancing building safety is a complex challenge that requires a multifaceted approach, combining rigorous research, policy innovation, and community engagement. Our study contributes to this ongoing conversation, highlighting the urgency of addressing the risks associated with aging urban infrastructures. As we look to the future, let us draw upon the lessons learned from this research to build safer, more resilient communities for all.
+
 
 # Appendix
 
