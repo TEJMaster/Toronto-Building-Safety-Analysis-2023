@@ -366,4 +366,12 @@ Ultimately, enhancing building safety is a complex challenge that requires a mul
 
 # Appendix
 
+## Data Cleaning
+
+The data cleaning process involved several key steps to prepare the building evaluation dataset for analysis. Initially, the dataset was loaded into a data frame, and entries with missing values in the YEAR.BUILT and YEAR.EVALUATED columns were removed to ensure the accuracy of subsequent calculations. This step was essential to maintain the integrity of the dataset. Next, the age of each building was calculated by subtracting the year it was built from the year it was evaluated, and this information was added to the dataset as a new column, AGE. The cleaned dataset, now free of missing values and containing the calculated ages, was saved as a CSV file in the 'analysis_data' directory for further analysis. This thorough cleaning process was crucial for ensuring the reliability of the study's findings and laying a solid foundation for the statistical modeling that followed.
+
+## Data Validation
+
+Following the data cleaning process, a series of data integrity tests were conducted on the cleaned building evaluation dataset to ensure its accuracy and reliability for analysis. The first test verified that there were no negative values in the AGE column, as negative building ages would be illogical. The second test confirmed the absence of missing values (NA) in the critical columns YEAR.BUILT, YEAR.EVALUATED, and CURRENT.BUILDING.EVAL.SCORE, which are essential for the analysis. The third test checked that all evaluation scores fell within the expected range of 0 to 100, a necessary condition for valid score data. Lastly, the fourth test ensured that all buildings were evaluated in the year 2023, aligning with the study's focus on contemporary building evaluations. These validation checks were crucial for maintaining the dataset's integrity and provided confidence in the subsequent statistical modeling and analysis.
+
 # References
