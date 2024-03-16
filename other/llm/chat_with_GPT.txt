@@ -133,3 +133,1172 @@ Through a methodological approach, employing simple linear regression, this repo
 --- 
 
 This introduction sets the stage for your investigation, outlining the context, significance, and objectives of your study, along with a brief description of your methodological approach.
+
+residuals_summary_df <- data.frame(
+  Statistic = c("Min", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max"),
+  Value = residuals_rounded
+) Error in dimnames(x) <- dnx : 'dimnames' applied to non-array > residuals_rounded
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-69.700  -4.440   1.687  -0.003   5.860  15.715 
+the statistics are doubled: Summary Statistics for the Residuals of the Bayesian Linear Model
+Statistic	Value
+Min.	Min	-69.700
+1st Qu.	1st Qu.	-4.440
+Median	Median	1.687
+Mean	Mean	-0.003
+3rd Qu.	3rd Qu.	5.860
+Max.	Max	15.715
+ChatGPT
+I apologize for the confusion. It seems like the summary statistics are getting duplicated. To fix this, let's directly use the residuals_rounded vector to create the data frame, without repeating the statistic names:
+
+r
+Copy code
+```{r label: tbl-residuals-summary, echo=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Extract residuals from the Bayesian model
+residuals <- residuals(bayesian_model)
+
+# Create a summary table for residuals and round to three digits
+residuals_rounded <- round(summary(residuals), 3)
+
+# Create a data frame for better formatting
+residuals_summary_df <- data.frame(
+  Statistic = c("Min", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max"),
+  Value = as.numeric(residuals_rounded)  # Convert to numeric to ensure proper formatting
+)
+
+# Create a nicely formatted table
+residuals_table <- kable(residuals_summary_df, caption = "Summary Statistics for the Residuals of the Bayesian Linear Model",
+                         col.names = c("Statistic", "Value"),
+                         align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+residuals_table
+kotlin
+Copy code
+
+In this revised code, the `residuals_rounded` vector is directly used to populate the "Value" column in the `residuals_summary_df` data frame. This should prevent the duplication of statistics and produce a correctly formatted table.
+User
+  
+running xelatex - 1
+  This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex)
+   restricted \write18 enabled.
+  entering extended mode
+  
+updating tlmgr
+
+updating existing packages
+
+compilation failed- error
+Undefined control sequence.
+<argument> ...al \expandafter \let \cmrsideswitch 
+                                                  \@tempa \fi \fi 
+l.536 (Intercept)
+                  & 93.364\\ 
+
+see paper.log for more information.## Model Coefficients Interpretation
+
+```{r}
+#| label: tbl-coefficient-table
+#| tbl-cap: Summary Statistics for the Coefficients of the Linear Model
+#| echo: false
+
+# Extract coefficients from the Bayesian model
+coefficients <- coef(bayesian_model)
+
+# Round coefficients to two digits
+coefficients_rounded <- round(coefficients, 3)
+
+# Create a nicely formatted table
+coefficient_table <- kable(coefficients_rounded,
+                           col.names = c("Estimate"),
+                           align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+coefficient_table
+```
+
+@tbl-coefficient-table provides two key coefficients to understand the relationship between building age and the evaluation score:
+
+**Intercept** ($\beta_0$):  
+The model's intercept, $\beta_0$, has an estimate of 93.364. This represents the baseline evaluation score for a hypothetical newly constructed building. The intercept suggests that if a building were constructed in the current year, its expected evaluation score would be around 93.364, assuming all other factors remain constant.
+
+**Slope** ($\beta_1$):  
+The slope parameter, $\beta_1$, has an estimate of -0.097. This indicates that, on average, the evaluation score is expected to decrease by approximately 0.097 points for each additional year of a building's age. This negative value suggests a trend where older buildings tend to have lower evaluation scores compared to newer ones.
+
+**Interpretation**:
+The analysis suggests a negative relationship between building age and evaluation score. The estimates indicate that newer buildings tend to have higher evaluation scores, which decrease as buildings age. This trend highlights the importance of age as a factor in building evaluations and underscores the need for ongoing maintenance and updates to preserve building safety and integrity over time.
+
+## Model Equation
+
+\begin{align}
+y_i &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 + \beta_1 \times x_i \\
+\beta_0 &= 93.364 \\
+\beta_1 &= -0.097
+\end{align}
+
+In this model, $y_i$ represents the predicted evaluation score for the $i$-th building, $x_i$ represents the age for the $i$-th building, $\mu_i$ is the mean of the normal distribution for the $i$-th observation, $\beta_0$ is the intercept, and $\beta_1$ is the slope representing the change in evaluation score per year of building age.
+
+## Analysis of Residuals
+
+```{r}
+#| label: tbl-residuals-summary
+#| tbl-cap: Summary Statistics for the Residuals of the Bayesian Linear Model
+#| echo: false
+
+# Extract residuals from the Bayesian model
+residuals <- residuals(bayesian_model)
+
+# Create a summary table for residuals and round to three digits
+residuals_rounded <- round(summary(residuals), 3)
+
+# Create a data frame for better formatting
+residuals_summary_df <- data.frame(
+  Statistic = c("Min", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max"),
+  Value = as.numeric(residuals_rounded)  # Convert to numeric to ensure proper formatting
+)
+ChatGPT
+The error you're encountering seems to be related to the LaTeX compilation, specifically with the rendering of a table. The undefined control sequence error typically indicates that LaTeX is encountering a command it doesn't recognize.
+
+To troubleshoot this issue, you can try the following steps:
+
+Check for Special Characters: Ensure that there are no special characters in your table that might be causing issues with LaTeX rendering.
+
+Simplify the Table: Try simplifying the table to see if the error persists. For example, remove the kable_styling and see if the table compiles correctly.
+
+Check LaTeX Packages: Ensure that all necessary LaTeX packages are installed and up-to-date. The kableExtra package relies on several LaTeX packages, and missing any of them could cause compilation issues.
+
+Check the Log File: The paper.log file mentioned in the error message should contain more detailed information about what caused the error. Look for lines near the error message that might indicate which command or package is causing the issue.
+
+Update LaTeX Distribution: Make sure your LaTeX distribution (e.g., TeX Live, MiKTeX) is up-to-date. Sometimes, updating the distribution can resolve undefined control sequence errors.
+
+If none of these steps resolve the issue, you might want to provide a minimal working example that reproduces the error, which could help in diagnosing the specific cause of the problem.
+
+User
+LaTeX Warning: Reference `fig-score-distribution' on page 6 undefined on input line 448.
+
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 7.665pt on input line 474.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 5.475pt on input line 474.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 10.95099pt on input line 474.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 7.66568pt on input line 474.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 5.4755pt on input line 474.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 10.94882pt on input line 474.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 7.66417pt on input line 474.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 5.47441pt on input line 474.
+[6]
+Missing character: There is no 𝛽 (U+1D6FD) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no 𝛽 (U+1D6FD) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no ∼ (U+223C) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no 𝛽 (U+1D6FD) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no ∼ (U+223C) in font [lmroman10-regular]:mapping=tex-text;!
+! Undefined control sequence.
+<argument> ...al \expandafter \let \cmrsideswitch 
+                                                  \@tempa \fi \fi 
+l.536 (Intercept)
+                  & 93.364\\ 
+Here is how much of TeX's memory you used:
+ 38164 strings out of 476772
+ 796033 string characters out of 5800254
+ 1932842 words of memory out of 5000000
+ 59579 multiletter control sequences out of 15000+600000
+ 569433 words of font info for 118 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 108i,10n,121p,10900b,506s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+Output written on paper.pdf (6 pages).```{r}
+#| label: tbl-coefficient-table
+#| tbl-cap: Summary Statistics for the Coefficients of the Linear Model
+#| echo: false
+
+# Extract coefficients from the Bayesian model
+coefficients <- coef(bayesian_model)
+
+# Round coefficients to two digits
+coefficients_rounded <- round(coefficients, 3)
+
+# Create a nicely formatted table
+coefficient_table <- kable(coefficients_rounded,
+                           col.names = c("Estimate"),
+                           align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+coefficient_table
+```
+ChatGPT
+The warning about the undefined reference fig-score-distribution suggests that there might be a reference to a figure with this label in your document, but the figure itself is not properly labeled or is missing. Make sure that the figure you are referring to has the correct label, and that the label matches the reference in the text.
+
+The "Missing character" messages indicate that some Unicode characters (like 𝛽 and ∼) are not available in the font used by LaTeX. This can happen when using mathematical symbols in your document. To fix this, you can try using a different font that supports these characters, or use LaTeX commands for the symbols instead (e.g., \beta for 𝛽 and \sim for ∼).
+
+The "Undefined control sequence" error is more challenging to diagnose without more context. It's possible that this is related to the missing characters issue, or it could be due to an unrecognized command in your LaTeX document. Check the line of your document indicated in the error message (line 536) to see if there's anything unusual there.
+
+To address the font issue, you can try adding the following lines to your LaTeX preamble to use a font that supports the missing characters:
+
+latex
+Copy code
+\usepackage{unicode-math}
+\setmathfont{XITS Math}
+Make sure you have the unicode-math package and the XITS Math font installed. If you're using R Markdown, you can include the LaTeX preamble in the YAML header of your document:
+
+yaml
+Copy code
+header-includes:
+  - \usepackage{unicode-math}
+  - \setmathfont{XITS Math}
+This should help resolve the missing character issue. For the undefined control sequence error, you'll need to inspect the specific line of your document to determine the cause.
+
+User
+help me fix the compile issue for this code block: #| label: tbl-coefficient-table
+#| tbl-cap: Summary Statistics for the Coefficients of the Linear Model
+#| echo: false
+
+# Extract coefficients from the Bayesian model
+coefficients <- coef(bayesian_model)
+
+# Round coefficients to two digits
+coefficients_rounded <- round(coefficients, 3)
+
+# Create a nicely formatted table
+coefficient_table <- kable(coefficients_rounded,
+                           col.names = c("Estimate"),
+                           align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+coefficient_table Given the code block below works fine: #| label: tbl-residuals-summary
+#| tbl-cap: Summary Statistics for the Residuals of the Bayesian Linear Model
+#| echo: false
+
+# Extract residuals from the Bayesian model
+residuals <- residuals(bayesian_model)
+
+# Create a summary table for residuals and round to three digits
+residuals_rounded <- round(summary(residuals), 3)
+
+# Create a data frame for better formatting
+residuals_summary_df <- data.frame(
+  Statistic = c("Min", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max"),
+  Value = as.numeric(residuals_rounded)  # Convert to numeric to ensure proper formatting
+)
+
+# Create a nicely formatted table
+residuals_table <- kable(residuals_summary_df,
+                         col.names = c("Statistic", "Value"),
+                         align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+residuals_table
+ChatGPT
+The issue might be related to the way the coefficients are being extracted and rounded. Since coef(bayesian_model) returns a named vector, you should convert it to a data frame before rounding and creating the table. Here's the revised code:
+
+r
+Copy code
+#| label: tbl-coefficient-table
+#| tbl-cap: Summary Statistics for the Coefficients of the Linear Model
+#| echo: false
+
+# Extract coefficients from the Bayesian model
+coefficients <- coef(bayesian_model)
+
+# Convert coefficients to a data frame for better formatting
+coefficients_df <- data.frame(
+  Term = names(coefficients),
+  Estimate = coefficients
+)
+
+# Round the estimates to three digits
+coefficients_df$Estimate <- round(coefficients_df$Estimate, 3)
+
+# Create a nicely formatted table
+coefficient_table <- kable(coefficients_df,
+                           col.names = c("Term", "Estimate"),
+                           align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+coefficient_table
+In this revised code, the coefficients are first converted to a data frame (coefficients_df) with two columns: "Term" and "Estimate". The estimates are then rounded to three digits. Finally, the table is created using kable and styled with kable_styling. This approach should resolve the compilation issue and produce a nicely formatted table for the coefficients of the linear model.
+
+User
+the term is repeated twice: 	Term	Estimate
+(Intercept)	(Intercept)	93.364
+AGE	AGE	-0.097
+ChatGPT
+I apologize for the oversight. To fix the issue of the term being repeated twice, you can modify the code to create the coefficients_df data frame without duplicating the term names. Here's the corrected code:
+
+r
+Copy code
+#| label: tbl-coefficient-table
+#| tbl-cap: Summary Statistics for the Coefficients of the Linear Model
+#| echo: false
+
+# Extract coefficients from the Bayesian model
+coefficients <- coef(bayesian_model)
+
+# Convert coefficients to a data frame for better formatting
+coefficients_df <- data.frame(
+  Term = names(coefficients),
+  Estimate = unname(coefficients)  # Remove names from the coefficients vector
+)
+
+# Round the estimates to three digits
+coefficients_df$Estimate <- round(coefficients_df$Estimate, 3)
+
+# Create a nicely formatted table
+coefficient_table <- kable(coefficients_df,
+                           col.names = c("Term", "Estimate"),
+                           align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+coefficient_table
+In this revised code, the unname function is used to remove the names from the coefficients vector when creating the Estimate column of the coefficients_df data frame. This should prevent the term names from being duplicated in the table.
+
+User
+I still got this error for the code above: compilation failed- error
+Undefined control sequence.
+<argument> ...al \expandafter \let \cmrsideswitch 
+                                                  \@tempa \fi \fi 
+l.536 (Intercept)
+                  & 93.364\\ 
+ChatGPT
+The error you're encountering, "Undefined control sequence," is a common LaTeX error that usually indicates a problem with a command in your document. The issue might be related to the formatting or a missing package.
+
+Given that the error occurs at the line with the coefficients table, it's possible that the problem is related to the kable_styling function or the way the table is being rendered in LaTeX. To troubleshoot this, you can try simplifying the table to see if the error persists:
+
+Remove kable_styling: Temporarily remove the kable_styling function to see if the error is related to the styling options.
+
+r
+Copy code
+coefficient_table <- kable(coefficients_df,
+                           col.names = c("Term", "Estimate"),
+                           align = 'c')
+Check for Special LaTeX Characters: Ensure that there are no special LaTeX characters in your table that might need to be escaped (e.g., _, ^, %, &).
+
+Simplify the Table: Temporarily simplify the table to just a few rows to see if the error is related to specific content in the table.
+
+If removing kable_styling resolves the issue, you might need to adjust the styling options or ensure that all necessary LaTeX packages are included in your document. If the issue persists even with a simplified table, there might be a problem with the LaTeX environment or setup.
+
+Additionally, ensure that your LaTeX distribution is up-to-date and that all required packages are installed. If you're using R Markdown to generate a PDF, you can specify additional LaTeX packages in the YAML header:
+
+yaml
+Copy code
+header-includes:
+  - \usepackage{booktabs}  # Required for kableExtra
+  - \usepackage{longtable}  # Required for kableExtra if tables span multiple pages
+If none of these steps resolve the issue, please provide more details about your document setup and the context in which the error occurs, as this will help in diagnosing the specific cause of the problem.
+
+User
+please label the term with intercept and slope: #| label: tbl-coefficient-table
+#| tbl-cap: Summary Statistics for the Coefficients of the Linear Model
+#| echo: false
+
+# Extract coefficients from the Bayesian model
+coefficients <- coef(bayesian_model)
+
+# Convert coefficients to a data frame for better formatting
+coefficients_df <- data.frame(
+  Term = names(coefficients),
+  Estimate = unname(coefficients) 
+)
+
+# Round the estimates to three digits
+coefficients_df$Estimate <- round(coefficients_df$Estimate, 3)
+
+# Create a nicely formatted table
+coefficient_table <- kable(coefficients_df,
+                           col.names = c("Term", "Estimate"),
+                           align = 'c')
+
+# Print the summary table
+coefficient_table
+ChatGPT
+To label the terms with "Intercept" and "Slope," you can modify the Term column of your coefficients_df data frame. Here's the updated code:
+
+r
+Copy code
+```{r label: tbl-coefficient-table, tbl-cap: "Summary Statistics for the Coefficients of the Linear Model", echo=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Extract coefficients from the Bayesian model
+coefficients <- coef(bayesian_model)
+
+# Convert coefficients to a data frame for better formatting
+coefficients_df <- data.frame(
+  Term = c("Intercept", "Slope"),
+  Estimate = unname(coefficients) 
+)
+
+# Round the estimates to three digits
+coefficients_df$Estimate <- round(coefficients_df$Estimate, 3)
+
+# Create a nicely formatted table
+coefficient_table <- kable(coefficients_df,
+                           col.names = c("Term", "Estimate"),
+                           align = 'c') %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE,
+                position = "center")
+
+# Print the summary table
+coefficient_table
+vbnet
+Copy code
+
+In this revised code, the `Term` column is explicitly set to `c("Intercept", "Slope")` to label the coefficients accordingly. This assumes that your model has only these two coefficients. If your model has more coefficients, you might need to adjust the labels accordingly.
+User
+ help me update my interpretation with  the new value of the table: Residual Statistics	Value
+Min	-69.700
+1st Qu.	-4.440
+Median	1.687
+Mean	-0.003
+3rd Qu.	5.860
+Max	15.715 
+**1. Minimum Residual**: The minimum residual is approximately -69.619, indicating that there is at least one building for which the model's predicted evaluation score was lower than the actual score by approximately 69.662 points. This could be an outlier or a building with exceptional characteristics not captured by the model.
+
+**2. First Quartile Residual**: The first quartile (Q1) of the residuals is approximately -4.320, meaning that 25% of the buildings have evaluation scores that are less than 4.364 points below the model's prediction for their age.
+
+**3. Median Residual**: The median residual is approximately 1.757, suggesting a slight positive bias in the model's predictions, as the median of the error distribution is above zero. This indicates that, on average, the model tends to slightly overestimate the evaluation scores.
+
+**4. Third Quartile Residual**: The third quartile (Q3) is approximately 5.878, indicating that 75% of the buildings have evaluation scores within 5.833 points of the model's predictions or better. This shows that the model provides reasonably accurate predictions for the majority of buildings.
+
+**5. Maximum Residual**: The maximum residual is approximately 15.896, suggesting that there is at least one building for which the model's predicted evaluation score was higher than the actual score by approximately 15.896 points. This could be another outlier or a building that performed exceptionally well.
+
+**Interpretation**: The residuals provide insights into the model's fit and the distribution of errors. The presence of outliers and the distribution's slight asymmetry warrant further investigation. It's crucial to assess the model's assumptions, such as linearity, homoscedasticity, and normality of residuals, to ensure the validity of the statistical inferences made from the model. Understanding the reasons behind significant deviations can help improve the model and provide more accurate predictions.
+what is a Parquet file
+help me write a simulation to the dataset with a negative relationship between the building's age and evaluation score (not nessasay same as the model above): #### Preamble ####
+# Purpose: 
+# Author: Terry Tu, Jingyi Shen, Yaning Jin
+# Date: 14 March 2024
+# Contact: xiangyu.tu@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: 
+# 
+
+
+# Load necessary libraries
+library(tidyverse)
+
+# Set a seed for reproducibility
+set.seed(123)
+
+# Define the number of buildings to simulate
+n_buildings <- 1000
+
+# Generate building ages
+building_ages <- round(runif(n_buildings, min = 0, max = 120))
+
+
+help me revise my introduction that is similar to the one below: In the wake of the catastrophic collapse of an aged condominium in South Florida in June 2021, which resulted in 98 casualties, a subsequent lawsuit by the bereaved families underscored the notion that routine inspections and maintenance could have forestalled the disaster[@Anderson_2021]. This incident precipitates our investigation into forecasting the building evaluation scores for Toronto residences in 2023 via a simple linear regression model. An analysis was conducted on the apartment building evaluation dataset obtained from the City of Toronto's open data portal to assess the relationship between the age of a property and its evaluation score assigned by the city. Our research is singularly focused on elucidating the effect of one independent variable—building age—on the dependent variable, which in this context is the building evaluation score.
+
+This incident precipitates our investigation into forecasting the building evaluation scores for Toronto residences in 2023 via a simple linear regression model. An analysis was conducted on the apartment building evaluation dataset obtained from the City of Toronto's open data portal to assess the relationship between the age of a property and its evaluation score assigned by the city. Our research is singularly focused on elucidating the effect of one independent variable—building age—on the dependent variable, which in this context is the building evaluation score.
+
+In the following part of the paper, linear regression model is used to investigate the relationship between the age of apartment buildings and their assigned safety scores. Utilizing a dataset from the Toronto Open Data portal, which includes 3,435 records, we establish a statistically significant inverse relationship indicating that as buildings age, their safety scores tend to decrease. The research emphasizes the implications for policy, suggesting a need for enhanced maintenance and inspection procedures for Toronto's residential infrastructure. The model is executed using R with the rstanarm package, adhering to a Bayesian framework that integrates prior knowledge with the observed data to derive more informed statistical inferences. The approach combines the practicality of regression analysis with the theoretical robustness of Bayesian statistics, offering a comprehensive understanding of the data and informing policy recommendations for urban development and maintenance.
+Example: Lead exposure is a serious concern for many, capable of seriously harming children’s health, as
+well as causing a multitude of effects including damage to the brain, slowed growth, decreased
+IQ, and various others (Health Effects of Lead Exposure 2022). Of the various sources of lead
+exposure, lead in drinking water is a relevant concern for any of us given the average person’s
+daily reliance on tap water. Thus, given the dangers of lead exposure, in conjunction with the
+fact that lead cannot be seen, smelled, nor tasted, means that getting one’s water tested and
+having knowledge of its lead concentration is incredibly useful, and possibly impactful (Lead
+in Drinking Water 2023).
+In 2011, the Toronto City Council approved a lead in water mitigation strategy that aimed to
+reduce lead in drinking water. In 2014, the city had begun to add phosphate to the drinking
+water treatment process which forms a protective coating in all pipes and plumbing fixtures,
+effectively aiding in the reduction of lead contamination in water (Lead & Drinking Water
+2024).
+Lead concentration in water is typically measured in parts per billion (ppb), which is a unit
+of measurement describing small concentrations in water whereby 1 ppb is equivalent to 1
+microgram per litre (1𝜇𝑔/𝐿) (Parts Per Billion 2023). In May of 2014, a study had showed
+that 13% of Torontonian homes exceeded Health Canada’s standards for lead exposure of
+10 ppb (the limit at the time) after analyzing 15,000 water samples provided to the city by
+homeowners between 2008-2014 through the Residential Lead Testing Program (High Lead
+Levels Found in Some Toronto Drinking Water 2014). This paper utilizes data from the
+Residential Lead Testing Program that includes 9,302 water samples provided by households
+between 2015-2024 and seeks to evaluate whether the implementation of phosphate into the
+drinking water treatment in 2014 has made any impact on the portion of Torontonian homes
+with lead exposure exceeding Health Canada’s past standards of 10 ppb, as well as the updated
+standard maximum of 5 ppb by Health Canada (Canada 2019). Moreover, this paper aims
+to evaluate whether there are certain locations within Toronto more at-risk of having water
+that is contaminated with excessive levels of lead in a bid to evaluate whether the issue of lead
+exposure in water is more systematic or random.
+This paper finds evidence to suggest that the addition of phosphate to the drinking water
+treatment plan has decreased the concentrations of lead found in water samples over the years
+2015-2024. However, it finds minimal evidence to support the notion that the geographic location that the samples were collected in have any systematic influence on the lead concentrations
+likely to be obtained.
+2
+The remainder of this paper is structured as follows. Section 2 discusses the raw data, cleaning process, and offers a glimpse at the underlying distribution of data through tabular and
+graphical representations of the observations. Section 3 further elaborates on the information
+present in Section 2 by exploring various trends and correlations of the data as a function of
+the various variables at play through the use of numerous tabular and graphical representations. Section 4 deals with analyzing the trends and correlations showcased in Section 3 in
+more detail, comparing the results found to those in the literature cited. Finally Section 5
+discusses the limitations of the analysis conducted, as well as the next steps that could be
+taken to improve the overall reliability of the paper.
+ChatGPT
+Here's a revised introduction for your paper that is similar in style to the provided example:
+
+In recent years, the structural integrity of aging buildings has become a pressing concern, highlighted by the tragic collapse of a condominium in South Florida in June 2021, which resulted in 98 casualties. This event underscored the critical need for regular inspections and maintenance to prevent such disasters. Inspired by this incident, our study focuses on evaluating the building evaluation scores of Toronto residences in 2023. Utilizing a dataset from the Toronto Open Data portal, we aim to investigate the relationship between the age of apartment buildings and their assigned safety scores. The dataset encompasses 3,435 records, providing a comprehensive overview of various properties across the city.
+
+Our analysis employs a simple linear regression model to establish a statistically significant negative relationship between building age and safety scores. This finding suggests that older buildings tend to have lower safety scores, emphasizing the importance of regular upkeep and updates. The research is executed using R with the rstanarm package, adopting a Bayesian framework that integrates prior knowledge with observed data to produce more informed statistical inferences. This approach not only enhances the practicality of regression analysis but also enriches the theoretical robustness of Bayesian statistics. The insights gained from this study are intended to inform policy recommendations for urban development and maintenance, ensuring the safety and well-being of residents in Toronto's residential infrastructure.
+
+The remainder of this paper is structured as follows: Section 2 details the raw data, the cleaning process, and presents an overview of the data distribution through various tabular and graphical representations. Section 3 delves deeper into the trends and correlations observed in Section 2, exploring the impact of different variables on the data using a range of analytical tools. Section 4 provides a more detailed analysis of these trends and correlations, comparing our findings with existing literature. Finally, Section 5 discusses the limitations of our analysis and outlines potential future directions to enhance the reliability and scope of our research.
+
+Feel free to adjust the content to better fit your specific research focus and findings.
+
+User
+help me revise my introduction above based on rubric: Introduction
+The introduction is self-contained and tells a reader everything they need to know including: 1) broader context to motivate; 2) some detail about what the paper is about; 3) a clear gap that needs to be filled; 4) what was done; 5) what was found; 6) why it is important; 7) the structure of the paper. A reader should be able to read only the introduction and know what was done, why, and what was found. Likely 3 or 4 paragraphs, or 10 per cent of total. This criterion is linked to a Learning Outcome. Estimand: The estimand is clearly stated in the introduction. Please also include our findings: # Discussion 
+
+## Overview of the Study
+
+This paper presented a detailed analysis using simple linear regression to investigate the impact of building age on the evaluation scores assigned by the City of Toronto. By analyzing data from the Toronto Open Data portal, the study aimed to forecast evaluation scores for Toronto residences in 2023. The analysis revealed a statistically significant inverse relationship between building age and evaluation score, suggesting that older buildings tend to have lower evaluation scores.
+
+## Insights into Urban Development and Maintenance
+
+One key insight from this study is the importance of building age in the overall health and safety of urban residential environments. The findings underscore the potential risks associated with older buildings, which may not meet modern standards or may have deteriorated over time. This knowledge emphasizes the need for regular inspections, maintenance, and upgrades to older buildings to ensure they remain safe and habitable. Additionally, the study highlights the value of continuous monitoring and evaluation by urban authorities to maintain and improve housing standards across the city.
+
+## Policy Implications and Housing Quality
+
+Another significant insight relates to the policy implications for housing quality and safety standards. The correlation between building age and lower evaluation scores may prompt policymakers to reconsider regulations surrounding building inspections, maintenance schedules, and renovation requirements. It suggests an opportunity for targeted interventions in older buildings to prevent potential hazards and improve living conditions for residents. Moreover, these findings could guide urban planning strategies, prioritizing the revitalization of aging housing stock and ensuring equitable access to safe and quality housing.
+
+## Limitations of the Study
+
+Despite its contributions, this study has several limitations. Firstly, the model accounts for only a small fraction of the variability in evaluation scores, indicating that other factors besides building age significantly influence these scores. The exclusion of variables such as building materials, design, maintenance history, and location may limit the comprehensiveness of the findings. Additionally, the model's assumptions (e.g., linearity and homoscedasticity) and the presence of outliers suggest caution in generalizing the results without further investigation.
+
+## Future Directions
+
+Given the limitations and the insights gained, future research should aim to incorporate additional variables that could affect building evaluation scores. A more comprehensive model including factors like renovation history, compliance with current building codes, and socio-economic characteristics of the neighborhood could provide a deeper understanding of what influences building evaluation scores. Longitudinal studies could also shed light on the trends over time, offering insights into the effectiveness of policy interventions and maintenance practices. Moreover, comparative analyses across different cities or countries could highlight unique challenges and best practices in building maintenance and safety standards.
+
+In conclusion, while this study has provided valuable insights into the impact of building age on evaluation scores, it also opens the door for further research to explore the multifaceted nature of building quality and safety. Addressing these questions is crucial for developing effective strategies to improve urban living conditions and ensure the longevity and safety of the housing stock. 
+ChatGPT
+Here's a revised introduction based on the rubric and the provided findings:
+
+The structural integrity of urban buildings is a paramount concern for city planners, policymakers, and residents alike. The tragic collapse of a condominium in South Florida in June 2021, which resulted in 98 casualties, serves as a stark reminder of the potential consequences of neglecting building maintenance and inspections. This event highlights a critical gap in our understanding of the factors that contribute to the safety and longevity of urban residential structures.
+
+In response to this gap, this paper investigates the relationship between building age and evaluation scores assigned by the City of Toronto. Utilizing a dataset from the Toronto Open Data portal, comprising 3,435 records, we employ a simple linear regression model to forecast the evaluation scores of Toronto residences in 2023. Our analysis reveals a statistically significant inverse relationship between building age and evaluation score, indicating that older buildings tend to have lower evaluation scores. This finding is important as it underscores the need for regular inspections and maintenance to ensure the safety and habitability of aging buildings.
+
+Furthermore, our study offers insights into urban development and maintenance, suggesting that policymakers may need to revisit regulations surrounding building inspections and maintenance schedules. The study also highlights the importance of continuous monitoring and evaluation by urban authorities to maintain and improve housing standards across the city.
+
+However, the study is not without limitations. The model accounts for only a small fraction of the variability in evaluation scores, suggesting that factors other than building age also play a significant role. Additionally, the assumptions of linearity and homoscedasticity, as well as the presence of outliers, warrant caution in generalizing the results.
+
+Future research should aim to incorporate additional variables that could affect building evaluation scores, such as renovation history, compliance with current building codes, and socio-economic characteristics of the neighborhood. Longitudinal studies and comparative analyses across different cities or countries could also provide valuable insights into building maintenance and safety standards.
+
+The remainder of this paper is structured as follows: Section 2 discusses the raw data, cleaning process, and offers a glimpse at the underlying distribution of data. Section 3 explores various trends and correlations of the data as a function of the variables at play. Section 4 analyzes these trends in more detail, comparing the results to existing literature. Section 5 discusses the limitations of the analysis and outlines potential future directions for research.
+
+In conclusion, this paper contributes to our understanding of the impact of building age on evaluation scores and highlights the importance of proactive measures to ensure the safety and integrity of urban housing stock.
+
+Feel free to adjust the content to better fit your specific research focus and findings.
+
+User
+help me revise this part: The remainder of this paper is structured as follows: @sec-data discusses the raw data, cleaning process, and offers a glimpse at the underlying distribution of data. @sec-model discuss the linear model used in this paper to predict the building evaluation score using the age. @sec-result discussed the coefficient for the linear model, as well as residual analysis, and a plot with the lienar model on this analysis data set. @sec-discussion discusses the limitations of the analysis and outlines potential future directions for research.
+ChatGPT
+Here's a revised version of that section:
+
+The remainder of this paper is organized as follows: Section 2 (@sec-data) details the raw data, the cleaning process, and provides an overview of the data distribution. Section 3 (@sec-model) describes the linear model employed to predict the building evaluation score based on the building's age. Section 4 (@sec-result) presents the coefficients of the linear model, analyses the residuals, and includes a plot illustrating the linear model applied to the analysis dataset. Finally, Section 5 (@sec-discussion) discusses the limitations of the analysis and suggests potential avenues for future research.
+
+User
+please don't modify my syntax for '@sec-data' and other sections, and mainly focus on edit the writing of the discription for each section
+ChatGPT
+Understood. Here's a revised version with the syntax for section references preserved:
+
+The remainder of this paper is organized as follows: Section 2 (@sec-data) provides a detailed overview of the raw data, the cleaning process, and a preliminary analysis of the data distribution. Section 3 (@sec-model) elaborates on the linear model utilized to predict the evaluation scores of buildings based on their age. Section 4 (@sec-result) explores the results of the linear model, including an examination of the coefficients, a residual analysis, and a visual representation of the model applied to the dataset. Section 5 (@sec-discussion) addresses the limitations encountered in the analysis and proposes directions for future research.
+
+User
+help me resive my introduction so it includes everything next and in 5 paragraphs: Introduction
+The introduction is self-contained and tells a reader everything they need to know including: 1) broader context to motivate; 2) some detail about what the paper is about; 3) a clear gap that needs to be filled; 4) what was done; 5) what was found; 6) why it is important; 7) the structure of the paper. A reader should be able to read only the introduction and know what was done, why, and what was found. Likely 3 or 4 paragraphs, or 10 per cent of total. This criterion is linked to a Learning Outcome. Estimand: The estimand is clearly stated in the introduction: My introduction: # Introduction
+
+The structural integrity of urban buildings is a paramount concern for city planners, policymakers, and residents alike. The tragic collapse of a condominium in South Florida in June 2021, which resulted in 98 casualties, serves as a stark reminder of the potential consequences of neglecting building maintenance and inspections [@Anderson_2021]. This event highlights a critical gap in our understanding of the factors that contribute to the safety and longevity of urban residential structures.
+
+In response to this gap, this paper investigates the relationship between building age and evaluation scores assigned by the City of Toronto. Utilizing a dataset from the Toronto Open Data portal, comprising 3,435 records, we employ a simple linear regression model to forecast the evaluation scores of Toronto residences in 2023. Our analysis reveals a statistically significant inverse relationship between building age and evaluation score, indicating that older buildings tend to have lower evaluation scores. This finding is important as it underscores the need for regular inspections and maintenance to ensure the safety and habitability of aging buildings.
+
+Furthermore, our study offers insights into urban development and maintenance, suggesting that policymakers may need to revisit regulations surrounding building inspections and maintenance schedules. The study also highlights the importance of continuous monitoring and evaluation by urban authorities to maintain and improve housing standards across the city.
+
+However, the study is not without limitations. The model accounts for only a small fraction of the variability in evaluation scores, suggesting that factors other than building age also play a significant role. Additionally, the assumptions of linearity and homoscedasticity, as well as the presence of outliers, warrant caution in generalizing the results.
+
+Future research should aim to incorporate additional variables that could affect building evaluation scores, such as renovation history, compliance with current building codes, and socio-economic characteristics of the neighborhood. Longitudinal studies and comparative analyses across different cities or countries could also provide valuable insights into building maintenance and safety standards.
+
+The remainder of this paper is structured as follows:  @sec-data details the raw data, the cleaning process, and provides an overview of the data distribution. @sec-model describes the linear model employed to predict the building evaluation score based on the building's age. @sec-result presents the coefficients of the linear model, analyses the residuals, and includes a plot illustrating the linear model applied to the analysis dataset. Finally, @sec-discussion discusses the limitations of the analysis and suggests potential avenues for future research.
+
+In conclusion, this paper contributes to our understanding of the impact of building age on evaluation scores and highlights the importance of proactive measures to ensure the safety and integrity of urban housing stock.
+ChatGPT
+Here's a revised introduction with five paragraphs, incorporating all the required elements:
+
+The structural integrity of urban buildings is a paramount concern for city planners, policymakers, and residents alike. The tragic collapse of a condominium in South Florida in June 2021, which resulted in 98 casualties, serves as a stark reminder of the potential consequences of neglecting building maintenance and inspections. This event highlights a critical gap in our understanding of the factors that contribute to the safety and longevity of urban residential structures. In light of this, our study aims to investigate the relationship between building age and evaluation scores in the context of Toronto's residential buildings.
+
+To address this gap, we utilize a dataset from the Toronto Open Data portal, comprising 3,435 records, and employ a simple linear regression model to explore the relationship between building age and evaluation scores. Our analysis reveals a statistically significant inverse relationship, indicating that older buildings tend to have lower evaluation scores. This finding underscores the importance of regular inspections and maintenance to ensure the safety and habitability of aging buildings and highlights the need for policies that prioritize the upkeep of older structures.
+
+Moreover, our study provides valuable insights into urban development and maintenance, suggesting that policymakers may need to revisit regulations surrounding building inspections and maintenance schedules. It also emphasizes the importance of continuous monitoring and evaluation by urban authorities to maintain and improve housing standards across the city. These insights have significant implications for urban planning and public safety, as they underscore the need for proactive measures to prevent potential hazards associated with aging infrastructure.
+
+However, our study is not without limitations. The model accounts for only a small fraction of the variability in evaluation scores, suggesting that factors other than building age also play a significant role in determining a building's safety. Additionally, the assumptions of linearity and homoscedasticity, as well as the presence of outliers, warrant caution in generalizing the results. Future research should aim to incorporate additional variables that could affect building evaluation scores, such as renovation history, compliance with current building codes, and socio-economic characteristics of the neighborhood.
+
+In conclusion, this paper contributes to our understanding of the impact of building age on evaluation scores and highlights the importance of proactive measures to ensure the safety and integrity of urban housing stock. The remainder of this paper is structured as follows: Section 2 (@sec-data) details the raw data, the cleaning process, and provides an overview of the data distribution. Section 3 (@sec-model) describes the linear model employed to predict the building evaluation score based on the building's age. Section 4 (@sec-result) presents the coefficients of the linear model, analyses the residuals, and includes a plot illustrating the linear model applied to the analysis dataset. Finally, Section 5 (@sec-discussion) discusses the limitations of the analysis and suggests potential avenues for future research.
+
+Feel free to adjust the content to better fit your specific research focus and findings.
+
+User
+please don't include the limitation in the introduction: The structural integrity of urban buildings is a paramount concern for city planners, policymakers, and residents alike. The tragic collapse of a condominium in South Florida in June 2021, which resulted in 98 casualties, serves as a stark reminder of the potential consequences of neglecting building maintenance and inspections [@Anderson_2021]. This event highlights a critical gap in our understanding of the factors that contribute to the safety and longevity of urban residential structures. In light of this, our study aims to investigate the relationship between building age and evaluation scores in the context of Toronto's residential buildings.
+
+To address this gap, we utilize a dataset from the Toronto Open Data portal, comprising 3,435 records, and employ a simple linear regression model to explore the relationship between building age and evaluation scores. Our analysis reveals a statistically significant inverse relationship, indicating that older buildings tend to have lower evaluation scores. This finding underscores the importance of regular inspections and maintenance to ensure the safety and habitability of aging buildings and highlights the need for policies that prioritize the upkeep of older structures.
+
+Moreover, our study provides valuable insights into urban development and maintenance, suggesting that policymakers may need to revisit regulations surrounding building inspections and maintenance schedules. It also emphasizes the importance of continuous monitoring and evaluation by urban authorities to maintain and improve housing standards across the city. These insights have significant implications for urban planning and public safety, as they underscore the need for proactive measures to prevent potential hazards associated with aging infrastructure.
+
+However, our study is not without limitations. The model accounts for only a small fraction of the variability in evaluation scores, suggesting that factors other than building age also play a significant role in determining a building's safety. Additionally, the assumptions of linearity and homoscedasticity, as well as the presence of outliers, warrant caution in generalizing the results. Future research should aim to incorporate additional variables that could affect building evaluation scores, such as renovation history, compliance with current building codes, and socio-economic characteristics of the neighborhood.
+
+In conclusion, this paper contributes to our understanding of the impact of building age on evaluation scores and highlights the importance of proactive measures to ensure the safety and integrity of urban housing stock. The remainder of this paper is structured as follows: @sec-data details the raw data, the cleaning process, and provides an overview of the data distribution. @sec-model describes the linear model employed to predict the building evaluation score based on the building's age. @sec-result presents the coefficients of the linear model, analyses the residuals, and includes a plot illustrating the linear model applied to the analysis dataset. Finally, @sec-discussion discusses the limitations of the analysis and suggests potential avenues for future research.
+ChatGPT
+Here's a revised introduction without the mention of limitations:
+
+The structural integrity of urban buildings is a paramount concern for city planners, policymakers, and residents alike. The tragic collapse of a condominium in South Florida in June 2021, which resulted in 98 casualties, serves as a stark reminder of the potential consequences of neglecting building maintenance and inspections. This event highlights a critical gap in our understanding of the factors that contribute to the safety and longevity of urban residential structures. In light of this, our study aims to investigate the relationship between building age and evaluation scores in the context of Toronto's residential buildings.
+
+To address this gap, we utilize a dataset from the Toronto Open Data portal, comprising 3,435 records, and employ a simple linear regression model to explore the relationship between building age and evaluation scores. Our analysis reveals a statistically significant inverse relationship, indicating that older buildings tend to have lower evaluation scores. This finding underscores the importance of regular inspections and maintenance to ensure the safety and habitability of aging buildings and highlights the need for policies that prioritize the upkeep of older structures.
+
+Moreover, our study provides valuable insights into urban development and maintenance, suggesting that policymakers may need to revisit regulations surrounding building inspections and maintenance schedules. It also emphasizes the importance of continuous monitoring and evaluation by urban authorities to maintain and improve housing standards across the city. These insights have significant implications for urban planning and public safety, as they underscore the need for proactive measures to prevent potential hazards associated with aging infrastructure.
+
+In conclusion, this paper contributes to our understanding of the impact of building age on evaluation scores and highlights the importance of proactive measures to ensure the safety and integrity of urban housing stock. The remainder of this paper is structured as follows: Section 2 (@sec-data) details the raw data, the cleaning process, and provides an overview of the data distribution. Section 3 (@sec-model) describes the linear model employed to predict the building evaluation score based on the building's age. Section 4 (@sec-result) presents the coefficients of the linear model, analyses the residuals, and includes a plot illustrating the linear model applied to the analysis dataset. Finally, Section 5 (@sec-discussion) discusses potential avenues for future research and the implications of our findings.
+
+Feel free to adjust the content to better fit your specific research focus and findings.
+
+User
+please clearly state the estimand for this paper in the introduction that is similar to this: Our study’s estimand is the effect of gender on susceptibility to money illusion within a Brazilian cultural context. We investigate how gender differences influence economic decision-making
+when individuals are presented with scenarios that typically induce money illusion, such as
+perceptions of wage increases, real estate transactions, purchasing and selling decisions, and
+choices between risky and risk-free contracts. By replicating four problems originally proposed
+by Shafir and colleagues (Shafir, Diamond, and Tversky 1997), we aim to quantify the magnitude of these gender differences and understand their implications for economic behavior.
+ChatGPT
+Here's a revised introduction that includes a clear statement of the estimand for your paper:
+
+The structural integrity of urban buildings is a paramount concern for city planners, policymakers, and residents alike. The tragic collapse of a condominium in South Florida in June 2021, resulting in 98 casualties, serves as a stark reminder of the potential consequences of neglecting building maintenance and inspections. This event underscores a significant gap in our understanding of the factors that contribute to the safety and longevity of urban residential structures. In response, our study focuses on elucidating the relationship between the age of buildings and their evaluation scores, particularly within the context of Toronto's residential buildings.
+
+Our study's estimand is the effect of building age on evaluation scores in Toronto. We investigate how the age of buildings influences their assigned evaluation scores, reflecting their compliance with safety standards and overall condition. Utilizing a dataset from the Toronto Open Data portal, which includes 3,435 records, we apply a simple linear regression model to forecast evaluation scores for Toronto residences in 2023. By conducting this analysis, we aim to quantify the impact of building age on evaluation scores and understand its implications for urban housing safety and maintenance.
+
+The analysis reveals a statistically significant inverse relationship between building age and evaluation score, indicating that older buildings tend to receive lower evaluation scores. This finding highlights the critical need for regular inspections and maintenance to preserve the safety and habitability of aging buildings. It also suggests that policies should prioritize the maintenance and inspection of older structures to prevent potential safety hazards.
+
+Moreover, our study offers insights into urban development and maintenance, suggesting that policymakers might need to revisit regulations surrounding building inspections and maintenance schedules. It further emphasizes the importance of continuous monitoring and evaluation by urban authorities to maintain and enhance housing standards across the city. These insights carry substantial implications for urban planning and public safety, underscoring the necessity of proactive measures to mitigate risks associated with aging infrastructure.
+
+In conclusion, this paper significantly advances our understanding of the relationship between building age and evaluation scores, underlining the importance of proactive strategies to ensure the safety and integrity of the urban housing stock. The remainder of this paper is organized as follows: Section 2 (@sec-data) details the raw data, cleaning process, and offers an overview of the data distribution. Section 3 (@sec-model) outlines the linear model employed to predict the building evaluation score based on building age. Section 4 (@sec-result) presents the model's coefficients, analyzes the residuals, and includes a plot demonstrating the linear model applied to the dataset. Finally, Section 5 (@sec-discussion) explores potential future research directions and the broader implications of our findings.
+
+This revised introduction includes a clearly defined estimand and covers all necessary components to provide readers with a comprehensive overview of your paper's focus, methodology, and key findings.
+
+
+1 / 2
+
+User
+help me simlify this section so it takes less space: @tbl-summary-table presents a concise overview of the key descriptive metrics for the age of buildings and their evaluation scores within the dataset:
+
+- **Count**: The dataset encompasses a total of 1,748 buildings, indicating a robust sample size for statistical analysis.
+
+- **Mean Age**: The average age of the buildings is approximately 60.644 years, suggesting that the dataset primarily includes buildings that have been standing for over half a century.
+
+- **Standard Deviation of Age**: With a standard deviation of about 19.939 years, there is considerable variability in the ages of the buildings. This range implies a diverse sample, encompassing both relatively new constructions and much older structures.
+
+- **Mean Score**: The average building evaluation score is approximately 87.504 on a scale from 0 to 100. A higher score corresponds to better adherence to safety and maintenance standards, suggesting that the buildings in this dataset are generally well-maintained.
+
+- **Standard Deviation of Score**: The standard deviation of approximately 8.693 for the evaluation scores indicates that while scores are clustered around a high mean, there is still notable variability, reflecting differences in the condition or compliance of the buildings.
+
+These statistics offer a snapshot of the dataset's characteristics, providing foundational insights for further analysis regarding the state of building safety and integrity in the population studied.
+ChatGPT
+Here's a simplified version of the section:
+
+Table [@tbl-summary-table] provides a summary of the descriptive statistics for the dataset:
+
+Count: The dataset contains 1,748 buildings.
+Mean Age: The average age of the buildings is 60.644 years, indicating a mix of older and newer constructions.
+Standard Deviation of Age: The standard deviation of 19.939 years reflects a wide range in building ages.
+Mean Score: The average evaluation score is 87.504 out of 100, suggesting that the buildings are generally in good condition.
+Standard Deviation of Score: The standard deviation of 8.693 for the scores indicates some variation in building conditions.
+These statistics provide an overview of the building ages and evaluation scores in the dataset, setting the stage for further analysis.
+
+Feel free to adjust the wording or details to better fit your paper's style and content.
+
+User
+can you make this plot smaller ```{r fig-age-distribution, echo=FALSE, fig.cap="Distribution of building's age for the cleaned data set"}
+# Histogram for the distribution of building age
+ggplot(cleaned_data, aes(x = AGE)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  labs(
+    x = "Age of Building (Years)",
+    y = "Frequency"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
+```
+
+2 / 2
+
+ChatGPT
+You can make the plot smaller by adjusting the dimensions of the plot output in your R Markdown document. Add the fig.width and fig.height options to the chunk header like this:
+
+{r
+Copy code
+# Histogram for the distribution of building age
+ggplot(cleaned_data, aes(x = AGE)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  labs(
+    x = "Age of Building (Years)",
+    y = "Frequency"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
+Adjust the fig.width and fig.height values as needed to achieve the desired size for your plot.
+
+User
+help me write a paragraph for the data cleaning section based on the code: #### Preamble ####
+# Purpose: To clean the building evaluation data by removing NA values and calculating the AGE of buildings
+# Author: Terry Tu, Jingyi Shen, Yaning Jin
+# Date: 14 March 2024
+# Contact: xiangyu.tu@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: 'readr' for reading CSV data, 'dplyr' for data manipulation, and 'here' for managing file paths
+# The raw dataset must be located in the 'data/raw_data' directory before running this script
+
+#### Workspace setup ####
+library(readr)
+library(dplyr)
+library(here)
+
+#### Data cleaning ####
+# Load the raw data file into a data frame
+data <- read_csv(here("data", "raw_data", "building_evaluation_data.csv"))
+
+# Clean up the data by filtering out NAs in YEAR.BUILT and YEAR.EVALUATED and adding the 'AGE' column
+cleaned_data <- data %>%
+  filter(!is.na(YEAR.BUILT) & !is.na(YEAR.EVALUATED)) %>%
+  mutate(AGE = YEAR.EVALUATED - YEAR.BUILT)
+
+#### Save cleaned data ####
+# Save the cleaned data to a CSV file in the 'outputs/data' directory
+write_csv(cleaned_data, here("data", "analysis_data", "cleaned_building_data.csv"))
+
+# Print a message indicating completion
+cat("Cleaned data has been saved as 'cleaned_building_data.csv' in the 'data/analysis_data' directory")
+ChatGPT
+Here's a paragraph for the data cleaning section based on your code:
+
+In the data cleaning process, the raw building evaluation dataset was first loaded into a data frame using the read_csv function from the readr package. To ensure the integrity of the analysis, entries with missing values in the YEAR.BUILT and YEAR.EVALUATED columns were filtered out. This step was crucial to guarantee accurate age calculations for each building. Subsequently, a new column, AGE, was created to represent the age of each building by subtracting the year built from the year evaluated. The cleaned dataset, devoid of missing values and enriched with the calculated ages, was then saved as a CSV file in the 'analysis_data' directory for further analysis. This meticulous cleaning process laid a solid foundation for the subsequent statistical modeling and ensured the reliability of the study's findings.
+
+Feel free to adjust the wording or details to better fit your paper's style and content.
+
+User
+please don't focus on discuss the package we used and only include the process for data cleaning
+ChatGPT
+Here's a revised paragraph focusing solely on the data cleaning process:
+
+The data cleaning process involved several key steps to prepare the building evaluation dataset for analysis. Initially, the dataset was loaded into a data frame, and entries with missing values in the YEAR.BUILT and YEAR.EVALUATED columns were removed to ensure the accuracy of subsequent calculations. This step was essential to maintain the integrity of the dataset. Next, the age of each building was calculated by subtracting the year it was built from the year it was evaluated, and this information was added to the dataset as a new column, AGE. The cleaned dataset, now free of missing values and containing the calculated ages, was saved as a CSV file in the 'analysis_data' directory for further analysis. This thorough cleaning process was crucial for ensuring the reliability of the study's findings and laying a solid foundation for the statistical modeling that followed.
+
+Feel free to adjust the wording or details to better fit your paper's style and content.
+
+User
+also help me add a data validation section based on this code: #### Preamble ####
+# Purpose: To perform a series of data integrity tests on the cleaned building evaluation dataset
+# Author: Terry Tu, Jingyi Shen, Yaning Jin
+# Date: 14 March 2024
+# Contact: xiangyu.tu@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: 'readr' for reading CSV data, 'dplyr' for data manipulation, 'here' for file path management
+# The cleaned dataset should be located in the 'data/analysis_data' directory and be free of processing errors
+
+#### Workspace setup ####
+library(readr)
+library(dplyr)
+library(here)
+
+# Load the cleaned data file into a variable 'data'
+file_path <- here("data", "analysis_data", "cleaned_building_data.csv")
+data <- read_csv(file_path)
+
+# Below are the tests for the cleaned dataset, 
+# after running them we expected to get TRUE for all test cases
+
+# Test 1: No negative values in the AGE column
+test_age_positive <- all(data$AGE >= 0)
+
+# Test 2: No NA values in YEAR.BUILT, YEAR.EVALUATED, CURRENT.BUILDING.EVAL.SCORE columns
+test_no_na <- all(!is.na(data$YEAR.BUILT) & !is.na(data$YEAR.EVALUATED) & !is.na(data$CURRENT.BUILDING.EVAL.SCORE))
+
+# Test 3: CURRENT.BUILDING.EVAL.SCORE values are within the range 0 to 100
+test_score_range <- all(data$CURRENT.BUILDING.EVAL.SCORE >= 0 & data$CURRENT.BUILDING.EVAL.SCORE <= 100)
+
+# Test 4: All YEAR.EVALUATED values are 2023
+test_year_evaluated <- all(data$YEAR.EVALUATED == 2023)
+
+# Print the result from the tests
+print(paste("Test 1 - No negative values in AGE:", test_age_positive))
+print(paste("Test 2 - No NA values in critical columns:", test_no_na))
+print(paste("Test 3 - Building scores are within the range of 0 to 100:", test_score_range))
+print(paste("Test 4 - All YEAR.EVALUATED values are 2023:", test_year_evaluated))
+ChatGPT
+Here's a paragraph for the data validation section based on the provided code:
+
+Following the data cleaning process, a series of data integrity tests were conducted on the cleaned building evaluation dataset to ensure its accuracy and reliability for analysis. The first test verified that there were no negative values in the AGE column, as negative building ages would be illogical. The second test confirmed the absence of missing values (NA) in the critical columns YEAR.BUILT, YEAR.EVALUATED, and CURRENT.BUILDING.EVAL.SCORE, which are essential for the analysis. The third test checked that all evaluation scores fell within the expected range of 0 to 100, a necessary condition for valid score data. Lastly, the fourth test ensured that all buildings were evaluated in the year 2023, aligning with the study's focus on contemporary building evaluations. These validation checks were crucial for maintaining the dataset's integrity and provided confidence in the subsequent statistical modeling and analysis.
+
+Feel free to adjust the wording or details to better fit your paper's style and content.
+
+User
+help me add some posterior prediction check for my model: #### Preamble ####
+# Purpose: To construct a Bayesian linear model assessing the impact of building age on safety evaluation scores using rstanarm
+# Author: Terry Tu, Jingyi Shen, Yaning Jin
+# Date: 14 March 2024
+# Contact: xiangyu.tu@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: The 'rstanarm' package for Bayesian modeling, 'readr' for data manipulation, and 'here' for path management
+# The 'cleaned_data' dataset must be pre-processed before using it in the model.
+
+#### Workspace setup ####
+library(readr)
+library(rstanarm)
+library(here)
+
+#### Read data ####
+cleaned_data <- read_csv(here("data", "analysis_data", "cleaned_building_data.csv"))
+
+# Ensure reproducibility
+set.seed(2024)
+
+### Model data ####
+bayesian_model <- stan_glm(
+  CURRENT.BUILDING.EVAL.SCORE ~ AGE, 
+  data = cleaned_data,
+  family = gaussian(), # Assuming a normal distribution for the response variable
+  prior = normal(0, 0.05, autoscale = FALSE), # Set the prior for the slope coefficient (beta_1)
+  prior_intercept = normal(85, 10, autoscale = FALSE), # Set the prior for the intercept (beta_0)
+  seed = 2024 # Set the seed for reproducibility
+)
+
+# Summary of the model to check for immediate red flags
+summary(bayesian_model)
+
+#### Save model ####
+# Save the Bayesian model as an .rds file to the 'models' folder
+saveRDS(
+  bayesian_model,
+  file = here("models", "bayesian_linear_model.rds")
+) Similar to this example: ## Posterior predictive check
+In @fig-post_dist, we implement a posterior distribution. This compares who people voted for in reality with the prediction results from the posterior distribution from our logistic regression model. It can be observed that the posterior distribution fits perfectly with the actual data, it suggests that the model accurately captures the observed data patterns. So the posterior is able to generate simulated data that closely resembles the actual data [@bayes_post]. This is a positive sign because it indicates that our logistic regression model is a good representation of the actual voting preferences in the 2020 election data.
+
+```{r}
+#| label: fig-post_dist
+#| fig-cap: Posterior distribution for logistic regression model 
+#| echo: false
+#| warning: false
+#| message: false
+
+pp_check(political_preferences1) +
+  theme(legend.position = "bottom")
+```
+
+@fig-post_prior compares the posterior with the prior. This compares the prior distribution of parameters with the posterior distribution of parameters in our logistic regression model. We can see that majority of the model parameters do not change even after data are taken into account. This shows that the observed data matches with our initial belief and expectation about the voting preferences for 2020 presidential election. However, for "raceOther", the posterior distribution shifts from its prior after we input observed data. This is likely suggesting that the observed data for "raceOther" strongly contradicts our initial belief. Yet, this is not a big problem since the percentage of the racial group "raceOther" is 0.86% (473/43534 from @tbl-summary) in our dataset.
+
+```{r}
+#| label: fig-post_prior
+#| fig-cap: Comparing the posterior with the prior 
+#| echo: false
+#| warning: false
+#| message: false
+
+#### Read data ####
+analysis_data <- read_csv(here::here("data/analysis_data/cleaned_ces2020.csv"))
+
+# Convert variables to factors
+analysis_data$race <- factor(analysis_data$race)
+analysis_data$region <- factor(analysis_data$region)
+analysis_data$employ <- factor(analysis_data$employ)
+
+# Create voted_for variable in binary form
+analysis_data$voted_for_binary <- ifelse(analysis_data$voted_for == "Biden", 1, 0)
+
+# Model 1 for n = 1000
+set.seed(123)
+
+ces2020_reduced <- 
+  analysis_data |> 
+  slice_sample(n = 1000)
+
+posterior_vs_prior(political_preferences1) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  coord_flip()
+```
+
+
+## Credibility Interval {#sec-credibility-interval}
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-modelresults1
+#| fig-cap: "Credible intervals for predictors of support for Biden 1"
+
+modelplot(political_preferences1, conf_level = 0.90, size = 0.1) +
+  labs(x = "90% credibility interval")
+```
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-modelresults2
+#| fig-cap: "Credible intervals for predictors of support for Biden 2"
+# Create the model plot
+model_plot <- modelplot(political_preferences1, conf_level = 0.9)
+
+# Modify the x-axis limits
+model_plot + xlim(-5, 5) +  # Adjust the limits as needed
+  labs(x = "90% Credibility Interval")
+```
+
+
+## Markov chain Monte Carlo Convergence Check
+
+@fig-trace is a trace plot. It shows if there is existence of signs that the our model runs into issues. We observe lines that are horizontal and oscillating, and have overlaps between the chains. This suggests that there is nothing strange in this trace plot.
+
+@fig-rhat is a Rhat plot. It compares the variability within each chain to the variability between chains in MCMC. Ideally, we want Rhat to be close to 1, which indicates that the chains have converged to the same distribution. We can observe that our Rhat plot are all close to 1, and no more than 1.05. This is a positive sign because it suggests that the MCMC algorithm has reached convergence for our model. 
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-trace
+#| fig-cap: "Trace plot"
+
+ plot(political_preferences1, "trace")
+```
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-rhat
+#| fig-cap: "Rhat plot"
+
+plot(political_preferences1, "rhat")
+```
+ChatGPT
+To add a posterior predictive check for your model, you can use the pp_check function from the bayesplot package. Here's an example of how to incorporate it into your analysis:
+
+Preamble
+r
+Copy code
+# Purpose: To construct a Bayesian linear model assessing the impact of building age on safety evaluation scores using rstanarm
+# Author: Terry Tu, Jingyi Shen, Yaning Jin
+# Date: 14 March 2024
+# Contact: xiangyu.tu@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: The 'rstanarm' package for Bayesian modeling, 'readr' for data manipulation, and 'here' for path management
+# The 'cleaned_data' dataset must be pre-processed before using it in the model.
+
+#### Workspace setup ####
+library(readr)
+library(rstanarm)
+library(here)
+library(bayesplot)
+
+#### Read data ####
+cleaned_data <- read_csv(here("data", "analysis_data", "cleaned_building_data.csv"))
+
+# Ensure reproducibility
+set.seed(2024)
+
+### Model data ####
+bayesian_model <- stan_glm(
+  CURRENT.BUILDING.EVAL.SCORE ~ AGE, 
+  data = cleaned_data,
+  family = gaussian(), # Assuming a normal distribution for the response variable
+  prior = normal(0, 0.05, autoscale = FALSE), # Set the prior for the slope coefficient (beta_1)
+  prior_intercept = normal(85, 10, autoscale = FALSE), # Set the prior for the intercept (beta_0)
+  seed = 2024 # Set the seed for reproducibility
+)
+
+# Summary of the model to check for immediate red flags
+summary(bayesian_model)
+
+#### Save model ####
+# Save the Bayesian model as an .rds file to the 'models' folder
+saveRDS(
+  bayesian_model,
+  file = here("models", "bayesian_linear_model.rds")
+)
+Posterior Predictive Check
+To assess the fit of our Bayesian linear model, we can use a posterior predictive check. This involves comparing the observed data to data simulated from the model's posterior predictive distribution. A good model fit would show that the simulated data resemble the observed data closely.
+
+r
+Copy code
+#| label: fig-posterior-predictive-check
+#| fig-cap: "Posterior predictive check for the Bayesian linear model"
+#| echo: false
+#| warning: false
+#| message: false
+
+# Perform a posterior predictive check
+pp_check(bayesian_model) +
+  theme_minimal() +
+  labs(
+    title = "Posterior Predictive Check",
+    subtitle = "Comparing observed data to simulated data from the posterior predictive distribution"
+  )
+In the posterior predictive check plot, we compare the distribution of the observed evaluation scores to the distribution of scores simulated from the model's posterior predictive distribution. If the model is a good fit, the observed data should fall within the range of the simulated data, indicating that the model can accurately capture the underlying patterns in the data.
+
+User
+Error in pp_check(bayesian_model) : could not find function "pp_check"
+ChatGPT
+It seems that the pp_check function is not available in your environment. This function is part of the bayesplot package, which is a common tool used for visualizing Bayesian models. You can install and load the bayesplot package using the following code:
+
+r
+Copy code
+install.packages("bayesplot")
+library(bayesplot)
+Once you have installed and loaded the bayesplot package, you should be able to use the pp_check function for the posterior predictive check. Here's the code again for the posterior predictive check:
+
+r
+Copy code
+# Perform a posterior predictive check
+pp_check(bayesian_model) +
+  theme_minimal() +
+  labs(
+    title = "Posterior Predictive Check",
+    subtitle = "Comparing observed data to simulated data from the posterior predictive distribution"
+  )
+Make sure you run the install.packages("bayesplot") line only once to install the package, and then you can use library(bayesplot) in your future sessions to load the package without reinstalling it.
+
+User
+what is the difference between write parquet and write csv: #### Save data ####
+write_parquet(ces2020, "data/analysis_data/analysis_data.parquet")
+ChatGPT
+The main difference between writing data to a Parquet file (write_parquet) and writing to a CSV file (write_csv) lies in the format and efficiency of the data storage:
+
+Format:
+
+CSV (Comma-Separated Values): A simple text format where each line represents a row of data, and each value within the row is separated by a comma. CSV files are human-readable and easy to edit with a text editor, but they do not support complex data types or compression.
+Parquet: A binary columnar storage format optimized for use with large datasets and analytics. Parquet files are more efficient for storing and processing data, as they support data compression, complex data types, and efficient querying. They are not human-readable and require specialized tools to read and write.
+Efficiency:
+
+CSV: Less efficient in terms of storage space and read/write speed, especially for large datasets. It does not support compression or efficient querying, which can lead to slower performance when processing large amounts of data.
+Parquet: More efficient in terms of storage space and read/write speed, especially for large datasets. It supports data compression, which reduces the file size, and allows for efficient querying, making it a better choice for analytics and big data processing.
+Use Cases:
+
+CSV: Suitable for small to medium-sized datasets, easy sharing and interoperability with different tools, and scenarios where human readability is important.
+Parquet: Suitable for large datasets, analytics and data processing tasks, and scenarios where storage efficiency and fast querying are important.
+In summary, if you're working with large datasets and need efficient storage and processing, using Parquet files is a better choice. If you're working with smaller datasets or need a format that is easy to read and share, CSV files are a suitable option.
+
+User
+can you make this plot smaller ```{r fig-age-distribution, echo=FALSE, fig.cap="Distribution of building's age for the cleaned data set"}
+# Histogram for the distribution of building age
+ggplot(cleaned_data, aes(x = AGE)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  labs(
+    x = "Age of Building (Years)",
+    y = "Frequency"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
+```
+ChatGPT
+To make the plot smaller, you can adjust the fig.width and fig.height options in the code chunk header. Here's how you can modify your code:
+
+{r
+Copy code
+# Histogram for the distribution of building age
+ggplot(cleaned_data, aes(x = AGE)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  labs(
+    x = "Age of Building (Years)",
+    y = "Frequency"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
+In this example, I've set the fig.width to 6 inches and the fig.height to 4 inches. You can adjust these values to fit your needs.
+
+User
+can you make these 2 plots side by side and modify the cross referencing: ### Age Distribution
+```{r fig-age-distribution, echo=FALSE, fig.cap="Distribution of building's age for the cleaned data set", fig.width=4, fig.height=3}
+# Histogram for the distribution of building age
+ggplot(cleaned_data, aes(x = AGE)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  labs(
+    x = "Age of Building (Years)",
+    y = "Frequency"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 8, face = "bold"),
+    axis.title = element_text(size = 7),
+    axis.text = element_text(size = 6)
+  )
+```
+
+@fig-age-distribution illustrates the frequency distribution of the ages of buildings within the dataset. The x-axis represents the age of the buildings in years, while the y-axis shows the frequency of buildings within each age range. The distribution appears to be unimodal with a peak around the 50-year mark, indicating that a substantial number of the buildings within this dataset were constructed around half a century ago. Following this peak, the frequency gradually decreases, showing that fewer buildings have been in existence beyond this age. The distribution suggests a relatively young building population, with ages concentrated below 100 years, and very few buildings reaching beyond 120 years of age. This visualization aids in understanding the age profile of buildings under consideration for safety evaluation scoring.
+
+
+### Score Distribution
+
+```{r fig-score-distribution, echo=FALSE, fig.cap="Distribution of building's evaluation score for the cleaned data set", fig.width=4, fig.height=3}
+# Code created with the help from ChatGPT
+# Histogram for CURRENT.BUILDING.EVAL.SCORE distribution
+ggplot(cleaned_data, aes(x = CURRENT.BUILDING.EVAL.SCORE)) +
+  geom_histogram(binwidth = 5, fill = "darkgreen", color = "white") +
+  labs(
+    x = "Current Building Evaluation Score",
+    y = "Frequency"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 8, face = "bold"),
+    axis.title = element_text(size = 7),
+    axis.text = element_text(size = 6)
+  )
+```
+
+@fig-score-distribution showcases the distribution of building evaluation scores. The x-axis represents the scores assigned to buildings, which can range from 0 to 100, with the y-axis displaying the frequency of buildings for each score interval. The chart reveals a concentration of high evaluation scores, suggesting that many of the buildings in the dataset are rated as being in good or excellent condition according to the evaluation criteria. The tallest bars are clustered towards the higher end of the score range, indicating that buildings with scores close to 100 are prevalent. This positive skew in the distribution might reflect effective building standards and maintenance practices in place. The spread of the scores and their frequency can offer insights into the overall health of the evaluated buildings, influencing urban planning and policy development.
