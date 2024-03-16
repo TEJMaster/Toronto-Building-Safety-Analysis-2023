@@ -19,6 +19,6 @@ To facilitate transparency and reproducibility, the repository is structured as 
 
 The contributions to this project are as follows:
 
-- Terry Tu:
-- Jingyi Shen:
-- Yaning jin:
+- Terry Tu: Project Management, Scripts, Model, Tables, Plots
+- Jingyi Shen: Introduction, Data, Measurement
+- Yaning jin: Result, Discussion, Simulation, Sketches
