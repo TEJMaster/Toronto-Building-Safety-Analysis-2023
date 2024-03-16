@@ -50,7 +50,9 @@ cleaned_data <- read_csv(here("data", "analysis_data", "cleaned_building_data.cs
 
 ## Raw Data
 
-In this research, we examine apartment data sourced using the `opendatatoronto` package [@Toronto_2023]. The dataset encompasses 3,435 records, focusing on specific variables: the ward of each apartment, its evaluation score, and the construction year. The data covers evaluations across Toronto's 25 wards, with scores varying between a minimum of 0 and some achieving the maximum score of 100. The study includes apartments that are over three stories in height and contain at least 10 units. These apartments span a wide range of construction years, from as early as 1805 to as recent as 2023. All the apartments in this dataset adhere to the City's Apartment Building Standards bylaw, which is designed to safeguard the interests and safety of both landlords and tenants by mandating these evaluations.
+In this research, we examine apartment data sourced using the opendatatoronto package [@Toronto_2023]. The dataset encompasses 3,435 records, focusing on specific variables: the ward of each apartment, its evaluation score, and the construction year. The data covers evaluations across Toronto's 25 wards, with scores varying between a minimum of 0 and some achieving the maximum score of 100. The study includes apartments that are over three stories in height and contain at least 10 units. These apartments span a wide range of construction years, from as early as 1805 to as recent as 2023.
+
+All the apartments in this dataset adhere to the City's Apartment Building Standards bylaw, which is designed to safeguard the interests and safety of both landlords and tenants by mandating these evaluations. Although we have access to the building evaluation datasets from previous years, we chose to analyze the most recent data to ensure our study reflects the current state of apartment building scores in Toronto. This approach allows us to provide up-to-date insights into the relationship between building age and evaluation scores, which is critical for informing policy and maintenance practices in the city.
 
 ## Data Analysis Tools
 
@@ -58,13 +60,13 @@ The data analysis was performed using R [@r], a powerful open-source statistical
 
 ## Variable Description
 
-CURRENT BUILDING EVAL SCORE: The Current Building Evaluation Score represents a measure of a building's adherence to property standards. This score is derived by summing two components: the current reactive score, which reflects the compliance based on any outstanding Orders and Notices of Violations, and the proactive building score, which is based on the most recent comprehensive evaluation of the building.
+**CURRENT BUILDING EVAL SCORE**: The Current Building Evaluation Score represents a measure of a building's adherence to property standards. This score is derived by summing two components: the current reactive score, which reflects the compliance based on any outstanding Orders and Notices of Violations, and the proactive building score, which is based on the most recent comprehensive evaluation of the building [@Toronto_2023b].
 
-YEAR BUILT:	This indicates the year when the building was initially constructed, sourced from Building Owners/Managers.
+**YEAR BUILT**:	This indicates the year when the building was initially constructed, sourced from Building Owners/Managers.
 
-YEAR EVALUATED: This denotes the year in which the building underwent evaluation, reflecting its condition and performance.
+**YEAR EVALUATED**: This denotes the year in which the building underwent evaluation, reflecting its condition and performance.
 
-AGE: In this research, neither YEAR BUILT nor YEAR EVALUATED was used directly, we have generated a new variable called AGE which use YEAR EVALUATED minus YEAR BUILT.
+**AGE**: In this research, neither YEAR BUILT nor YEAR EVALUATED was used directly, we have generated a new variable called AGE which use YEAR EVALUATED minus YEAR BUILT.
 
 ## Sample of Cleaned Building Evaluation Data
 
@@ -72,7 +74,7 @@ AGE: In this research, neither YEAR BUILT nor YEAR EVALUATED was used directly, 
 #| label: tbl-data-sample
 #| tbl-cap: Sample of Building Evaluation Data
 #| echo: false
-
+# Code created with the help from ChatGPT
 sample_data <- head(cleaned_data) %>%
   select(X_id, AGE, CURRENT.BUILDING.EVAL.SCORE)
 
@@ -99,7 +101,7 @@ The dataset resulting from these evaluations offers valuable insights into the d
 #| label: tbl-summary-table
 #| tbl-cap: Summary Statistics for the Cleaned Dataset
 #| echo: false
-
+# Code created with the help from ChatGPT
 summary_data <- cleaned_data %>%
   summarise(
     Count = n(),
@@ -141,6 +143,7 @@ These statistics offer a snapshot of the dataset's characteristics, providing fo
 
 ### Age Distribution
 ```{r fig-age-distribution, echo=FALSE, fig.cap="Distribution of building's age for the cleaned data set", fig.width=8, fig.height=4}
+# Code created with the help from ChatGPT
 # Histogram for the distribution of building age
 ggplot(cleaned_data, aes(x = AGE)) +
   geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
@@ -216,7 +219,7 @@ bayesian_model <- readRDS(file = here("models", "bayesian_linear_model.rds"))
 #| label: tbl-coefficient-table
 #| tbl-cap: Summary Statistics for the Coefficients of the Linear Model
 #| echo: false
-
+# Code created with the help from ChatGPT
 # Extract coefficients from the Bayesian model
 coefficients <- coef(bayesian_model)
 
@@ -269,7 +272,7 @@ In this model, $y_i$ represents the predicted evaluation score for the $i$-th bu
 #| label: tbl-residuals-summary
 #| tbl-cap: Summary Statistics for the Residuals of the Bayesian Linear Model
 #| echo: false
-
+# Code created with the help from ChatGPT
 # Extract residuals from the Bayesian model
 residuals <- residuals(bayesian_model)
 
@@ -305,6 +308,7 @@ residuals_table
 
 ## Plot for the linear model
 ```{r fig-linear-plot, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="plot for the linear relationship between building age and evaluation score"}
+# Code created with the help from ChatGPT
 # Enhanced scatter plot with regression line
 improved_plot <- ggplot(cleaned_data, aes(x = AGE, y = CURRENT.BUILDING.EVAL.SCORE)) +
   geom_point(alpha = 0.7, size = 1) +  # Adjust transparency and size of points
