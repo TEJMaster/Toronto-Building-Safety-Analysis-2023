@@ -26,13 +26,14 @@ library(here)
 library(readr)
 library(knitr)
 library(kableExtra)
+library(rstanarm)
 ```
 
 # Introduction
 
 The structural integrity of urban buildings is a paramount concern for city planners, policymakers, and residents alike. The tragic collapse of a condominium in South Florida in June 2021, which resulted in 98 casualties, serves as a stark reminder of the potential consequences of neglecting building maintenance and inspections [@Anderson_2021]. This event highlights a critical gap in our understanding of the factors that contribute to the safety and longevity of urban residential structures. In light of this, our study aims to investigate the relationship between building age and evaluation scores in the context of Toronto's residential buildings.
 
-Our study's estimand is the effect of building age on evaluation scores in Toronto. We investigate how the age of buildings influences their assigned evaluation scores, reflecting their compliance with safety standards and overall condition. Utilizing a dataset from the Toronto Open Data portal, which includes 1,758 records, we apply a simple linear regression model to forecast evaluation scores for Toronto residences in 2023. By conducting this analysis, we aim to quantify the impact of building age on evaluation scores and understand its implications for urban housing safety and maintenance.
+Our study's estimand is the effect of building age on evaluation scores in Toronto. We investigate how the age of buildings influences their assigned evaluation scores, reflecting their compliance with safety standards and overall condition. Utilizing a dataset from the Toronto Open Data portal [@Toronto_2023], which includes 1,758 records, we apply a simple linear regression model to forecast evaluation scores for Toronto residences in 2023. By conducting this analysis, we aim to quantify the impact of building age on evaluation scores and understand its implications for urban housing safety and maintenance.
 
 The analysis reveals a statistically significant inverse relationship between building age and evaluation score, indicating that older buildings tend to receive lower evaluation scores. This finding highlights the critical need for regular inspections and maintenance to preserve the safety and habitability of aging buildings. It also suggests that policies should prioritize the maintenance and inspection of older structures to prevent potential safety hazards.
 
@@ -50,7 +51,7 @@ cleaned_data <- read_csv(here("data", "analysis_data", "cleaned_building_data.cs
 
 ## Raw Data
 
-In this research, we examine apartment data sourced using the opendatatoronto package [@Toronto_2023]. The dataset encompasses 1,758 records (1,748 records after cleaning), focusing on specific variables: the ward of each apartment, its evaluation score, and the construction year. The data covers evaluations across Toronto's 25 wards, with scores varying between a minimum of 0 and some achieving the maximum score of 100. The study includes apartments that are over three stories in height and contain at least 10 units. These apartments span a wide range of construction years, from as early as 1805 to as recent as 2023.
+In this research, we examine apartment data sourced using the opendatatoronto package [@Toronto_2023]. The dataset encompasses 1,758 records (1,748 records after cleaning), focusing on specific variables: the ward of each apartment, its evaluation score, and the construction year. The data covers evaluations across Toronto's 25 wards, with scores varying between a minimum of 0 and some achieving the maximum score of 100. The study includes apartments that are over three stories in height and contain at least 10 units. These apartments span a wide range of construction years, from as early as 1805 to as recent as 2023. For description of the data cleaning process and data validation checks performed, please refer to @sec-appendix (Appendix). 
 
 All the apartments in this dataset adhere to the City's Apartment Building Standards bylaw, which is designed to safeguard the interests and safety of both landlords and tenants by mandating these evaluations. Although we have access to the building evaluation datasets from previous years, we chose to analyze the most recent data to ensure our study reflects the current state of apartment building scores in Toronto. This approach allows us to provide up-to-date insights into the relationship between building age and evaluation scores, which is critical for informing policy and maintenance practices in the city.
 
@@ -94,7 +95,7 @@ The RentSafeTO program involves regular evaluations conducted by Bylaw Enforceme
 The dataset resulting from these evaluations offers valuable insights into the dynamics of building aging within Toronto's regulatory and maintenance framework. It is particularly useful for researchers and analysts looking to investigate temporal trends and the impact of the post-2023 enhancements on building safety and maintenance standards.
 
  
-## Data Exploration:
+## Data Exploration: {#sec-exploration}
 
 ### Data Summary
 ```{r}
@@ -128,7 +129,7 @@ summary_table
 
 @tbl-summary-table presents a concise overview of the key descriptive metrics for the age of buildings and their evaluation scores within the dataset:
 
-- **Count**: The dataset encompasses a total of 1,748 buildings, indicating a robust sample size for statistical analysis.
+- **Count**: The analysis dataset encompasses a total of 1,748 buildings, indicating a robust sample size for statistical analysis.
 
 - **Mean Age**: The average age of the buildings is approximately 60.644 years, suggesting that the dataset primarily includes buildings that have been standing for over half a century.
 
@@ -185,22 +186,23 @@ ggplot(cleaned_data, aes(x = CURRENT.BUILDING.EVAL.SCORE)) +
 
 # Model {#sec-model}
 
-The objective of our model is dual: to discern the relationship between building age and safety evaluation scores and to quantify this relationship's strength and direction. The study utilizes a simple linear regression model to analyze the dataset obtained from the Toronto Open Data portal.
+The objective of our model is dual: to discern the relationship between building age and safety evaluation scores and to quantify this relationship's strength and direction. The study utilizes a simple linear regression model to analyze the dataset obtained from the Toronto Open Data portal. Additional details and diagnostics for this model are included in @sec-posterior.
 
 ## Model set-up
 
 Let $y_i$ represent the safety evaluation score for each building. The building's age is denoted by $x_i$.The model is defined as follows:
 
 \begin{align}
-y_i &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \beta_0 + \beta_1 \times \mbox{AGE}_i \\
-\beta_0 &\sim \mbox{Normal}(85, 10) \\
-\beta_1 &\sim \mbox{Normal}(0, 0.05)
+y_i | \mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 + \beta_1 \times x_i \\
+\beta_0 &\sim \mbox{Normal}(90, 10) \\
+\beta_1 &\sim \mbox{Normal}(-0.1, 0.05) \\
+\sigma &\sim \mbox{Exponential}(1)
 \end{align}
 
-The model is implemented in R using the rstanarm package, which allows us to incorporate prior beliefs about the parameters and to estimate the posterior distributions. For the intercept $\beta_0$ and slope $\beta_1$ , we choose normal prior distributions centered around our initial estimates based on exploratory data analysis. The `stan_glm` function from `rstanarm` is utilized to carry out the Bayesian regression, providing a framework for inference that incorporates both the data and our prior knowledge.
+The model is implemented in R using the `rstanarm` package, which allows us to incorporate prior beliefs about the parameters and to estimate the posterior distributions. For the intercept $\beta_0$ and slope $\beta_1$, we choose normal prior distributions centered around our initial estimates based on exploratory data analysis (@sec-exploration). The `stan_glm` function from `rstanarm` is utilized to carry out the Bayesian regression, providing a framework for inference that incorporates both the data and our prior knowledge.
 
-The priors are chosen to reflect reasonable beliefs about the parameters before observing the data. The intercept prior reflects an expectation that a new building will have a high safety score around 90, with a wide spread to accommodate uncertainty. Similarly, the slope prior indicates an expected small negative impact of age on the safety score, acknowledging some uncertainty in the precise effect. The `stan_glm` function combines these priors with the data to estimate the posterior distributions of the model parameters.
+The priors are chosen to reflect reasonable beliefs about the parameters before observing the data. The intercept prior reflects an expectation that a new building will have a high safety score around 90, with a wide spread to accommodate uncertainty. Similarly, the slope prior indicates an expected small negative impact of age on the safety score, acknowledging some uncertainty in the precise effect. The standard deviation $\sigma$ is given an exponential prior with a rate of 1, reflecting a belief in the likelihood of smaller variability in evaluation scores. The `stan_glm` function combines these priors with the data to estimate the posterior distributions of the model parameters.
 
 ## Model justification
 
@@ -247,10 +249,10 @@ coefficient_table
 @tbl-coefficient-table provides two key coefficients to understand the relationship between building age and the evaluation score:
 
 **Intercept** ($\beta_0$):  
-The model's intercept, $\beta_0$, has an estimate of 93.364. This represents the baseline evaluation score for a hypothetical newly constructed building. The intercept suggests that if a building were constructed in the current year, its expected evaluation score would be around 93.364, assuming all other factors remain constant.
+The model's intercept, $\beta_0$, has an estimate of 93.607. This represents the baseline evaluation score for a hypothetical newly constructed building. The intercept suggests that if a building were constructed in the year for evaluation, its expected evaluation score would be around 93.607, assuming all other factors remain constant.
 
 **Slope** ($\beta_1$):  
-The slope parameter, $\beta_1$, has an estimate of -0.097. This indicates that, on average, the evaluation score is expected to decrease by approximately 0.097 points for each additional year of a building's age. This negative value suggests a trend where older buildings tend to have lower evaluation scores compared to newer ones.
+The slope parameter, $\beta_1$, has an estimate of -0.100. This indicates that, on average, the evaluation score is expected to decrease by approximately 0.100 points for each additional year of a building's age. This negative value suggests a trend where older buildings tend to have lower evaluation scores compared to newer ones.
 
 **Interpretation**:
 The analysis suggests a negative relationship between building age and evaluation score. The estimates indicate that newer buildings tend to have higher evaluation scores, which decrease as buildings age. This trend highlights the importance of age as a factor in building evaluations and underscores the need for ongoing maintenance and updates to preserve building safety and integrity over time.
@@ -258,13 +260,10 @@ The analysis suggests a negative relationship between building age and evaluatio
 ## Model Equation
 
 \begin{align}
-y_i &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \beta_0 + \beta_1 \times x_i \\
-\beta_0 &= 93.364 \\
-\beta_1 &= -0.097
+y_i &= 93.607 - 0.100 x_i + \varepsilon_i
 \end{align}
 
-In this model, $y_i$ represents the predicted evaluation score for the $i$-th building, $x_i$ represents the age for the $i$-th building, $\mu_i$ is the mean of the normal distribution for the $i$-th observation, $\beta_0$ is the intercept, and $\beta_1$ is the slope representing the change in evaluation score per year of building age.
+The above model equation serves as a predictive tool, estimating a building's evaluation score based on its age. In this equation, $y_i$ is the estimated evaluation score, $x_i$ represents the age of the building, $\varepsilon_i$ captures the residual effect—factors influencing the score that are not explained by the building's age. This implies that even among buildings of similar ages, scores can differ based on variables like maintenance quality, renovations, or compliance with updated building codes. The equation recognizes that while age is a significant predictor, the complexity of real-world conditions means there's always an element of variability unexplained by age alone.
 
 ## Analysis of Residuals
 
@@ -294,15 +293,15 @@ residuals_table <- kable(residuals_summary_df,
 residuals_table
 ```
 
-**1. Minimum Residual**: The minimum residual is approximately -69.700, indicating that there is at least one building for which the model's predicted evaluation score was lower than the actual score by approximately 69.700 points. This could be an outlier or a building with exceptional characteristics not captured by the model.
+**1. Minimum Residual**: The minimum residual is approximately -69.676, indicating that there is at least one building for which the model's predicted evaluation score was lower than the actual score by approximately 69.676 points. This could be an outlier or a building with exceptional characteristics not captured by the model.
 
-**2. First Quartile Residual**: The first quartile (Q1) of the residuals is approximately -4.440, meaning that 25% of the buildings have evaluation scores that are less than 4.440 points below the model's prediction for their age.
+**2. First Quartile Residual**: The first quartile (Q1) of the residuals is approximately -4.377, meaning that 25% of the buildings have evaluation scores that are less than 4.377 points below the model's prediction for their age.
 
-**3. Median Residual**: The median residual is approximately 1.687, suggesting a slight positive bias in the model's predictions, as the median of the error distribution is above zero. This indicates that, on average, the model tends to slightly overestimate the evaluation scores.
+**3. Median Residual**: The median residual is approximately 1.705, suggesting a slight positive bias in the model's predictions, as the median of the error distribution is above zero. This indicates that, on average, the model tends to slightly overestimate the evaluation scores.
 
-**4. Third Quartile Residual**: The third quartile (Q3) is approximately 5.860, indicating that 75% of the buildings have evaluation scores within 5.860 points of the model's predictions or better. This shows that the model provides reasonably accurate predictions for the majority of buildings.
+**4. Third Quartile Residual**: The third quartile (Q3) is approximately 5.821, indicating that 75% of the buildings have evaluation scores within 5.821 points of the model's predictions or better. This shows that the model provides reasonably accurate predictions for the majority of buildings.
 
-**5. Maximum Residual**: The maximum residual is approximately 15.715, suggesting that there is at least one building for which the model's predicted evaluation score was higher than the actual score by approximately 15.715 points. This could be another outlier or a building that performed exceptionally well.
+**5. Maximum Residual**: The maximum residual is approximately 15.835, suggesting that there is at least one building for which the model's predicted evaluation score was higher than the actual score by approximately 15.835 points. This could be another outlier or a building that performed exceptionally well.
 
 **Interpretation**: The residuals provide insights into the model's fit and the distribution of errors. The presence of outliers and the distribution's slight asymmetry warrant further investigation. It's crucial to assess the model's assumptions, such as linearity, homoscedasticity, and normality of residuals, to ensure the validity of the statistical inferences made from the model. Understanding the reasons behind significant deviations can help improve the model and provide more accurate predictions.
 
@@ -316,11 +315,9 @@ improved_plot <- ggplot(cleaned_data, aes(x = AGE, y = CURRENT.BUILDING.EVAL.SCO
   labs(
     x = "Building Age",
     y = "Building Evaluation Score",
-    title = "Impact of Building Age on Evaluation Score"
   ) +
   theme_minimal() +  # Use a minimal theme
   theme(
-    plot.title = element_text(size = 14),
     axis.title.x = element_text(size = 12),
     axis.title.y = element_text(size = 12),
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -342,7 +339,7 @@ The plot also reveals that while younger buildings cluster more densely around h
 
 ## Summary of Findings
 
-This study embarked on a journey to understand the relationship between the age of apartment buildings in Toronto and their safety evaluation scores. Leveraging a dataset of 3,435 records from the Toronto Open Data portal, we employed simple linear regression analysis to unearth a significant inverse correlation between building age and safety scores. Specifically, our findings indicate that older buildings in Toronto tend to receive lower safety evaluation scores. This observation underscores the potential risks associated with aging infrastructure, aligning with the broader literature on building safety and maintenance.
+This study embarked on a journey to understand the relationship between the age of apartment buildings in Toronto and their safety evaluation scores. Leveraging a dataset of 1,758 records from the Toronto Open Data portal, we employed simple linear regression analysis to unearth a significant inverse correlation between building age and safety scores. Specifically, our findings indicate that older buildings in Toronto tend to receive lower safety evaluation scores. This observation underscores the potential risks associated with aging infrastructure, aligning with the broader literature on building safety and maintenance.
 
 ## Insights into Building Safety
 
@@ -375,7 +372,7 @@ This study marks a starting point in the exploration of factors influencing buil
 Ultimately, enhancing building safety is a complex challenge that requires a multifaceted approach, combining rigorous research, policy innovation, and community engagement. Our study contributes to this ongoing conversation, highlighting the urgency of addressing the risks associated with aging urban infrastructures. As we look to the future, let us draw upon the lessons learned from this research to build safer, more resilient communities for all.
 
 
-# Appendix
+# Appendix {#sec-appendix}
 
 ## Data Cleaning
 
@@ -385,5 +382,26 @@ The data cleaning process involved several key steps to prepare the building eva
 
 Following the data cleaning process, a series of data integrity tests were conducted on the cleaned building evaluation dataset to ensure its accuracy and reliability for analysis. The first test verified that there were no negative values in the AGE column, as negative building ages would be illogical. The second test confirmed the absence of missing values (NA) in the critical columns YEAR.BUILT, YEAR.EVALUATED, and CURRENT.BUILDING.EVAL.SCORE, which are essential for the analysis. The third test checked that all evaluation scores fell within the expected range of 0 to 100, a necessary condition for valid score data. Lastly, the fourth test ensured that all buildings were evaluated in the year 2023, aligning with the study's focus on contemporary building evaluations. These validation checks were crucial for maintaining the dataset's integrity and provided confidence in the subsequent statistical modeling and analysis.
 
+## Posterior Predictive Check {#sec-posterior}
+
+```{r fig-posterior-plot, echo=FALSE, fig.cap="comparison between observed evaluation scores with those generated by our Bayesian model"}
+# This code generates plot that compare the distribution of the observed data to the distributions implied by the posterior predictive distribution of the model
+pp_check(bayesian_model) + 
+  theme_classic() +
+  theme(legend.position = "bottom")
+```
+From @fig-posterior-plot, we observe that the simulated data from the posterior distribution (represented by the lighter lines) closely match the distribution of the observed data (depicted by the solid line). This suggests that our model has a good fit to the observed data and that the chosen priors and model structure can reasonably replicate the variations in evaluation scores across buildings. The spread of the lighter lines around the solid line also highlights the degree of uncertainty in our predictions, which is a natural aspect of modeling real-world phenomena.
+
+```{r fig-comparison-plot, echo=FALSE, message=FALSE, fig.cap="Comparison of posterior and prior distributions for model parameters"}
+posterior_vs_prior(bayesian_model) +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom") +
+  coord_flip()
+```
+
+@fig-comparison-plot displays the median and spread of prior and posterior distributions for our model's parameters. It shows the posterior for the slope, related to the building's age, is quite similar to the prior, meaning our initial guess was on target. For the intercept and sigma, the data has slightly adjusted our estimates, reflecting its informative value. Overall, the data confirmed our prior thoughts about the effect of age on the building's evaluation score without much alteration.
+
+\newpage
 
 # References
